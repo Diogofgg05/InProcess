@@ -1,0 +1,332 @@
+{
+  "schema": 1,
+  "sensor_sessions": [
+    {
+      "manifest": "data\\validation\\gpu-session\\manifest.json",
+      "run_id": "6e4d6354-26ed-46f9-82b3-f82d02029652",
+      "samples": 60,
+      "duration_s": 120.0004517999987,
+      "device": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+      "temperature_min_c": 51.0,
+      "temperature_max_c": 54.0,
+      "power_min_w": 6.18,
+      "power_max_w": 14.4,
+      "errors": [],
+      "sha256_verified": true
+    },
+    {
+      "manifest": "data\\validation\\gpu-validation\\manifest.json",
+      "run_id": "4a942fc2-3d84-4a48-9367-e39d3c9b8282",
+      "samples": 60,
+      "duration_s": 120.00052750000032,
+      "device": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+      "temperature_min_c": 51.0,
+      "temperature_max_c": 56.0,
+      "power_min_w": 4.27,
+      "power_max_w": 11.34,
+      "errors": [],
+      "sha256_verified": true
+    }
+  ],
+  "soaks": [
+    {
+      "path": "data\\validation\\soak-smoke\\soak.json",
+      "configured": {
+        "duration_s": 12.0,
+        "workers": 1,
+        "duty_per_worker": 0.2,
+        "sampling_ms": 1000,
+        "churn_every_s": 5
+      },
+      "elapsed_s": 13.905195600003935,
+      "heartbeat_steady": {
+        "count": 260,
+        "median_ms": 33.131100000900915,
+        "p95_ms": 126.7634999967413,
+        "p99_ms": 195.80359999963548,
+        "maximum_ms": 285.4308000023593
+      },
+      "cpu_percent_one_core": 40.67724153408097,
+      "rss_growth_after_warmup_bytes": 38912.0,
+      "helper_count": 3,
+      "helpers_exited_successfully": true,
+      "owned_workers_observed": null,
+      "collection_failures": [],
+      "collection_count": 10,
+      "callbacks": {
+        "process_view": {
+          "count": 10,
+          "median_ms": 11.417150002671406,
+          "maximum_ms": 66.95190000027651
+        },
+        "icon_dispatch": {
+          "count": 10,
+          "median_ms": 0.08510000043315813,
+          "maximum_ms": 2.212299994425848
+        },
+        "resource_cards": {
+          "count": 10,
+          "median_ms": 1.914000000397209,
+          "maximum_ms": 3.3578000002307817
+        }
+      },
+      "internal_timer_spikes_80ms": 18,
+      "spikes_without_recorded_callbacks": 14,
+      "worst_internal_spikes": [
+        {
+          "at_s": 1.5354781999994884,
+          "gap_ms": 812.1221999972477,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 3.3404949000032502,
+          "gap_ms": 283.8139000014053,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 3.595134000002872,
+          "gap_ms": 254.63909999962198,
+          "overlapping_callbacks": [
+            {
+              "name": "process_view",
+              "start_s": 3.346227699999872,
+              "end_s": 3.362548400000378,
+              "duration_ms": 16.320700000505894
+            },
+            {
+              "name": "icon_dispatch",
+              "start_s": 3.362581900000805,
+              "end_s": 3.3625911999988602,
+              "duration_ms": 0.0092999980552122
+            },
+            {
+              "name": "resource_cards",
+              "start_s": 3.3626189999995404,
+              "end_s": 3.364742199999455,
+              "duration_ms": 2.1231999999145046
+            }
+          ]
+        },
+        {
+          "at_s": 4.429044700002123,
+          "gap_ms": 196.29110000096262,
+          "overlapping_callbacks": [
+            {
+              "name": "process_view",
+              "start_s": 4.235664699997869,
+              "end_s": 4.2453078999969875,
+              "duration_ms": 9.643199999118224
+            },
+            {
+              "name": "icon_dispatch",
+              "start_s": 4.245331999998598,
+              "end_s": 4.2456735000014305,
+              "duration_ms": 0.3415000028326176
+            },
+            {
+              "name": "resource_cards",
+              "start_s": 4.245703100001265,
+              "end_s": 4.247358200002054,
+              "duration_ms": 1.655100000789389
+            }
+          ]
+        },
+        {
+          "at_s": 6.627417700001388,
+          "gap_ms": 176.42219999834197,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 12.431641800001671,
+          "gap_ms": 167.13670000171987,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 6.439827100002731,
+          "gap_ms": 152.56910000607604,
+          "overlapping_callbacks": [
+            {
+              "name": "process_view",
+              "start_s": 6.287502899998799,
+              "end_s": 6.296598699998867,
+              "duration_ms": 9.095800000068266
+            },
+            {
+              "name": "icon_dispatch",
+              "start_s": 6.296622900001239,
+              "end_s": 6.296955700003309,
+              "duration_ms": 0.3328000020701438
+            },
+            {
+              "name": "resource_cards",
+              "start_s": 6.296988399997645,
+              "end_s": 6.298774599999888,
+              "duration_ms": 1.7862000022432767
+            }
+          ]
+        },
+        {
+          "at_s": 9.206173300000955,
+          "gap_ms": 149.40419999766164,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 9.426051299997198,
+          "gap_ms": 145.76579999993555,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 5.434851400001207,
+          "gap_ms": 143.97070000268286,
+          "overlapping_callbacks": []
+        }
+      ]
+    },
+    {
+      "path": "data\\validation\\soak-windows\\soak.json",
+      "configured": {
+        "duration_s": 180.0,
+        "workers": 2,
+        "duty_per_worker": 0.5,
+        "sampling_ms": 1000,
+        "churn_every_s": 5
+      },
+      "elapsed_s": 183.83008390000032,
+      "heartbeat_steady": {
+        "count": 5994,
+        "median_ms": 25.006200001371326,
+        "p95_ms": 26.572399998258334,
+        "p99_ms": 108.114900001965,
+        "maximum_ms": 458.0714999974589
+      },
+      "cpu_percent_one_core": 19.5663023357843,
+      "rss_growth_after_warmup_bytes": -57524224.0,
+      "helper_count": 70,
+      "helpers_exited_successfully": true,
+      "owned_workers_observed": 69,
+      "collection_failures": [],
+      "collection_count": 175,
+      "callbacks": {
+        "process_view": {
+          "count": 175,
+          "median_ms": 12.26939999469323,
+          "maximum_ms": 96.23790000478039
+        },
+        "icon_dispatch": {
+          "count": 175,
+          "median_ms": 0.057600002037361264,
+          "maximum_ms": 1.4800999997532926
+        },
+        "resource_cards": {
+          "count": 95,
+          "median_ms": 1.942900002177339,
+          "maximum_ms": 4.336300000431947
+        },
+        "performance_charts": {
+          "count": 38,
+          "median_ms": 21.011200002249097,
+          "maximum_ms": 78.00959999440238
+        },
+        "history_view": {
+          "count": 39,
+          "median_ms": 1.2638999978662468,
+          "maximum_ms": 3.097100001468789
+        }
+      },
+      "internal_timer_spikes_80ms": 108,
+      "spikes_without_recorded_callbacks": 77,
+      "worst_internal_spikes": [
+        {
+          "at_s": 3.0722276999949827,
+          "gap_ms": 2293.863599996257,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 183.20708190000005,
+          "gap_ms": 440.95860000379616,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 23.3180521999966,
+          "gap_ms": 365.80379999941215,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 123.23814739999943,
+          "gap_ms": 286.01200000412064,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 4.08559879999666,
+          "gap_ms": 264.40569999977015,
+          "overlapping_callbacks": [
+            {
+              "name": "process_view",
+              "start_s": 3.824647699999332,
+              "end_s": 3.8839558999970905,
+              "duration_ms": 59.30819999775849
+            },
+            {
+              "name": "icon_dispatch",
+              "start_s": 3.8839900999955717,
+              "end_s": 3.8839985000013257,
+              "duration_ms": 0.008400005754083395
+            },
+            {
+              "name": "resource_cards",
+              "start_s": 3.8840224999948987,
+              "end_s": 3.885766200000944,
+              "duration_ms": 1.743700006045401
+            }
+          ]
+        },
+        {
+          "at_s": 43.30392479999864,
+          "gap_ms": 264.2911000002641,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 182.4768685999952,
+          "gap_ms": 254.6585999953095,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 15.628837399999611,
+          "gap_ms": 245.95960000442574,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 3.82119309999689,
+          "gap_ms": 244.49109999841312,
+          "overlapping_callbacks": []
+        },
+        {
+          "at_s": 83.27054979999957,
+          "gap_ms": 238.8074999980745,
+          "overlapping_callbacks": []
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "path": "data\\validation\\linux-tests.xml",
+      "tests": 397,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "testcase_duration_s": 29.662000000000003,
+      "suite_duration_s": 45.709
+    },
+    {
+      "path": "data\\validation\\windows-tests.xml",
+      "tests": 397,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "testcase_duration_s": 68.142,
+      "suite_duration_s": 69.558
+    }
+  ],
+  "interpretation": "Descriptive local evidence; no physical certification or causal attribution."
+}

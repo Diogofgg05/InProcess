@@ -1,0 +1,39 @@
+{
+  "scope": "API: system + process collections, consecutive samples, no GUI",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.12.10",
+  "measurements": [
+    {
+      "repetition": 1,
+      "samples": 3,
+      "wall_s": 1.136007699999027,
+      "cpu_s": 1.078125,
+      "cpu_percent_one_core": 94.90472643811512,
+      "rss_bytes": 35168256,
+      "collection_mean_s": 0.3786680999958965,
+      "collection_max_s": 0.5340598999900976
+    },
+    {
+      "repetition": 2,
+      "samples": 3,
+      "wall_s": 0.8902591999940341,
+      "cpu_s": 0.796875,
+      "cpu_percent_one_core": 89.5104481936654,
+      "rss_bytes": 35188736,
+      "collection_mean_s": 0.2967517666644805,
+      "collection_max_s": 0.31287179999344517
+    },
+    {
+      "repetition": 3,
+      "samples": 3,
+      "wall_s": 1.1311247999983607,
+      "cpu_s": 0.984375,
+      "cpu_percent_one_core": 87.02620612698321,
+      "rss_bytes": 34643968,
+      "collection_mean_s": 0.3770405666679532,
+      "collection_max_s": 0.4617419999995036
+    }
+  ],
+  "mean_collection_s": 0.35082014444277676,
+  "between_repetitions_stdev_s": 0.04683165940756115
+}

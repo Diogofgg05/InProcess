@@ -1,0 +1,23 @@
+﻿collected_at,platform,category,name,value,source
+1794422848.9276063,Windows,Sistema,Sistema operativo,Windows 11,Python platform
+1794422848.9276063,Windows,Sistema,Arquitetura,AMD64,Python platform
+1794422848.9276063,Windows,Sistema,Arranque,2023-11-14 22:13:20 Hora padrão de GMT,psutil boot_time
+1794422848.9276063,Windows,CPU,Núcleos físicos,8,psutil cpu_count
+1794422848.9276063,Windows,CPU,Processadores lógicos,16,psutil cpu_count
+1794422848.9276063,Windows,Memória,RAM utilizável pelo SO,32.00 GiB,psutil virtual_memory
+1794422848.9276063,Windows,Memória,Swap / ficheiro de paginação,0 B (não configurado),psutil swap_memory
+1794422848.9276063,Windows,CPU,Frequência reportada,3200 MHz · máximo reportado 5000 MHz,psutil cpu_freq · instantâneo
+1794422848.9276063,Windows,CPU,Modelo,CPU do registo,Registo Windows · ProcessorNameString
+1794422848.9276063,Windows,Memória,Módulos físicos,Indisponível,CIM Win32_PhysicalMemory
+1794422848.9276063,Windows,GPU,Adaptadores,Indisponível,CIM Win32_VideoController
+1794422848.9276063,Windows,Placa principal,Fabricante / modelo,Indisponível,CIM / Registo Windows
+1794422848.9276063,Windows,Firmware,BIOS / UEFI,Indisponível,CIM / Registo Windows
+1794422848.9276063,Windows,Armazenamento,Discos físicos,Indisponível,CIM Win32_DiskDrive / MSFT_PhysicalDisk
+1794422848.9276063,Windows,Volumes,Volumes montados,Nenhum volume reportado,psutil disk_partitions
+1794422848.9276063,Windows,Rede,Interfaces,Nenhuma interface reportada,psutil net_if_stats
+1794422848.9276063,Windows,Energia,Bateria,Não detetada pelo SO,psutil sensors_battery
+1794422848.9276063,Windows,Sensores,Temperaturas expostas pelo SO,Indisponível · nenhum sensor acessível neste fornecedor,psutil sensors_temperatures
+1794422848.9276063,Windows,Notas / limitações,Nota,"Windows: AdapterRAM (uint32) pode truncar VRAM, incluindo placas com mais de 4 GiB; não é apresentado como capacidade dedicada fiável.",EXPECTO
+1794422848.9276063,Windows,Notas / limitações,Nota,Velocidade de ligação de rede é nominal; não representa tráfego instantâneo nem capacidade garantida. Endereços IP e MAC não são exportados.,EXPECTO
+1794422848.9276063,Windows,Notas / limitações,Nota,"Inventário de leitura pontual; frequências, rede, bateria e sensores podem mudar. Cache de 10 min; Atualizar força nova consulta.",EXPECTO
+1794422848.9276063,Windows,Notas / limitações,Nota,"Detetar um adaptador gráfico não mede utilização, temperatura ou consumo da GPU. Campos indisponíveis não são estimados.",EXPECTO

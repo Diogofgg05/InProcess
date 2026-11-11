@@ -1,0 +1,203 @@
+{
+  "collected_at": 1794346217.0494363,
+  "platform": "Windows",
+  "items": [
+    {
+      "category": "Sistema",
+      "name": "Sistema operativo",
+      "value": "Windows 11",
+      "source": "Python platform"
+    },
+    {
+      "category": "Sistema",
+      "name": "Arquitetura",
+      "value": "AMD64",
+      "source": "Python platform"
+    },
+    {
+      "category": "Sistema",
+      "name": "Arranque",
+      "value": "2026-11-08 20:46:48 Hora padrão de GMT",
+      "source": "psutil boot_time"
+    },
+    {
+      "category": "CPU",
+      "name": "Núcleos físicos",
+      "value": "12",
+      "source": "psutil cpu_count"
+    },
+    {
+      "category": "CPU",
+      "name": "Processadores lógicos",
+      "value": "16",
+      "source": "psutil cpu_count"
+    },
+    {
+      "category": "Memória",
+      "name": "RAM utilizável pelo SO",
+      "value": "7.68 GiB",
+      "source": "psutil virtual_memory"
+    },
+    {
+      "category": "Memória",
+      "name": "Swap / ficheiro de paginação",
+      "value": "13.19 GiB",
+      "source": "psutil swap_memory"
+    },
+    {
+      "category": "CPU",
+      "name": "Frequência reportada",
+      "value": "2500 MHz · máximo reportado 2500 MHz",
+      "source": "psutil cpu_freq · instantâneo"
+    },
+    {
+      "category": "CPU",
+      "name": "Modelo",
+      "value": "12th Gen Intel(R) Core(TM) i5-12500H",
+      "source": "Registo Windows · ProcessorNameString"
+    },
+    {
+      "category": "Memória",
+      "name": "Módulos físicos",
+      "value": "Indisponível",
+      "source": "CIM Win32_PhysicalMemory"
+    },
+    {
+      "category": "GPU",
+      "name": "Adaptador configurado 1",
+      "value": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+      "source": "Registo Windows · classe Display · configuração"
+    },
+    {
+      "category": "GPU",
+      "name": "Controlador configurado 1",
+      "value": "32.0.15.8183",
+      "source": "Registo Windows · DriverVersion"
+    },
+    {
+      "category": "GPU",
+      "name": "Memória dedicada 1",
+      "value": "Indisponível",
+      "source": "Registo Windows · não medida por este fornecedor"
+    },
+    {
+      "category": "GPU",
+      "name": "Adaptador configurado 2",
+      "value": "Intel(R) UHD Graphics",
+      "source": "Registo Windows · classe Display · configuração"
+    },
+    {
+      "category": "GPU",
+      "name": "Controlador configurado 2",
+      "value": "31.0.101.4502",
+      "source": "Registo Windows · DriverVersion"
+    },
+    {
+      "category": "GPU",
+      "name": "Memória dedicada 2",
+      "value": "Indisponível",
+      "source": "Registo Windows · não medida por este fornecedor"
+    },
+    {
+      "category": "Placa principal",
+      "name": "Fabricante / modelo",
+      "value": "HP · 8A26",
+      "source": "Registo Windows · HARDWARE/BIOS"
+    },
+    {
+      "category": "Firmware",
+      "name": "BIOS / UEFI",
+      "value": "AMI · F.14",
+      "source": "Registo Windows · HARDWARE/BIOS"
+    },
+    {
+      "category": "Firmware",
+      "name": "Data de firmware",
+      "value": "11/09/2023",
+      "source": "Registo Windows · HARDWARE/BIOS"
+    },
+    {
+      "category": "Armazenamento",
+      "name": "Discos físicos",
+      "value": "Indisponível",
+      "source": "CIM Win32_DiskDrive / MSFT_PhysicalDisk"
+    },
+    {
+      "category": "Volumes",
+      "name": "C:\\",
+      "value": "C:\\ · NTFS · total 475.82 GiB · livre 365.34 GiB",
+      "source": "psutil disk_partitions / disk_usage"
+    },
+    {
+      "category": "Rede",
+      "name": "Ethernet",
+      "value": "inativa / estado indisponível · velocidade nominal indisponível · IPv4 configurado · IPv6 configurado",
+      "source": "psutil net_if_stats / net_if_addrs"
+    },
+    {
+      "category": "Rede",
+      "name": "Ethernet 2",
+      "value": "ativa · ligação nominal 1000 Mbit/s · IPv4 configurado · IPv6 configurado",
+      "source": "psutil net_if_stats / net_if_addrs"
+    },
+    {
+      "category": "Rede",
+      "name": "Ligação de Rede Bluetooth",
+      "value": "inativa / estado indisponível · ligação nominal 3 Mbit/s · IPv4 configurado · IPv6 configurado",
+      "source": "psutil net_if_stats / net_if_addrs"
+    },
+    {
+      "category": "Rede",
+      "name": "Ligação de Área Local* 10",
+      "value": "inativa / estado indisponível · velocidade nominal indisponível · IPv4 configurado · IPv6 configurado",
+      "source": "psutil net_if_stats / net_if_addrs"
+    },
+    {
+      "category": "Rede",
+      "name": "Ligação de Área Local* 9",
+      "value": "inativa / estado indisponível · velocidade nominal indisponível · IPv4 configurado · IPv6 configurado",
+      "source": "psutil net_if_stats / net_if_addrs"
+    },
+    {
+      "category": "Rede",
+      "name": "Loopback Pseudo-Interface 1",
+      "value": "ativa · ligação nominal 1073 Mbit/s · IPv4 configurado · IPv6 configurado",
+      "source": "psutil net_if_stats / net_if_addrs"
+    },
+    {
+      "category": "Rede",
+      "name": "Wi-Fi",
+      "value": "ativa · ligação nominal 1201 Mbit/s · IPv4 configurado · IPv6 configurado",
+      "source": "psutil net_if_stats / net_if_addrs"
+    },
+    {
+      "category": "Energia",
+      "name": "Bateria",
+      "value": "53% · em descarga",
+      "source": "psutil sensors_battery"
+    },
+    {
+      "category": "Sensores",
+      "name": "Temperaturas expostas pelo SO",
+      "value": "Indisponível · nenhum sensor acessível neste fornecedor",
+      "source": "psutil sensors_temperatures"
+    }
+  ],
+  "notes": [
+    "Consulta não disponível: Win32_Processor: CimException (PermissionDenied; HRESULT 80131500)",
+    "Consulta não disponível: Win32_PhysicalMemory: CimException (PermissionDenied; HRESULT 80131500)",
+    "Consulta não disponível: Win32_VideoController: CimException (PermissionDenied; HRESULT 80131500)",
+    "Consulta não disponível: Win32_BaseBoard: CimException (PermissionDenied; HRESULT 80131500)",
+    "Consulta não disponível: Win32_BIOS: CimException (PermissionDenied; HRESULT 80131500)",
+    "Consulta não disponível: Win32_DiskDrive: CimException (PermissionDenied; HRESULT 80131500)",
+    "Consulta não disponível: MSFT_PhysicalDisk: CimException (PermissionDenied; HRESULT 80131500)",
+    "Consulta não disponível: Win32_OperatingSystem: CimException (PermissionDenied; HRESULT 80131500)",
+    "Adaptadores do registo representam configurações de controladores; podem incluir dispositivos antigos ou virtuais e não confirmam atividade ou presença atual.",
+    "Windows: AdapterRAM (uint32) pode truncar VRAM, incluindo placas com mais de 4 GiB; não é apresentado como capacidade dedicada fiável.",
+    "Velocidade de ligação de rede é nominal; não representa tráfego instantâneo nem capacidade garantida. Endereços IP e MAC não são exportados.",
+    "Inventário de leitura pontual; frequências, rede, bateria e sensores podem mudar. Cache de 10 min; Atualizar força nova consulta.",
+    "Detetar um adaptador gráfico não mede utilização, temperatura ou consumo da GPU. Campos indisponíveis não são estimados."
+  ],
+  "age_s": 1.708064079284668,
+  "cache_seconds": 600.0
+}

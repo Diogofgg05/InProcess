@@ -1,0 +1,9 @@
+.venv/
+.venv-linux-validation/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.pytest_cache_linux/
+build/
+dist/
+data/preferences.ini

@@ -1,0 +1,20 @@
+{
+  "scope": "Including startup; GUI + actual collector + Windows venv launcher; cached process handles; heartbeat is not input latency",
+  "backend": "process",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "qt_platform": "offscreen",
+  "interval_ms": 1000,
+  "actual_duration_s": 8.002829799996107,
+  "cpu_s": 0.5625,
+  "cpu_percent_one_core": 7.0287637505457585,
+  "worker_cpu_s": 1.28125,
+  "tree_cpu_s": 1.84375,
+  "tree_cpu_percent_one_core": 23.038725626788874,
+  "rss_peak_sampled_bytes": 89092096,
+  "tree_rss_peak_sampled_bytes": 127434752,
+  "heartbeat_count": 254,
+  "heartbeat_max_gap_ms": 48.02459999336861,
+  "heartbeat_p95_gap_ms": 37.71899999992456,
+  "collection_count": 8,
+  "collection_mean_ms": 195.49999999435386
+}

@@ -1,0 +1,20 @@
+{
+  "scope": "Including startup; GUI and aggregate owned-process resources; heartbeat is not input latency",
+  "backend": "process",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "qt_platform": "offscreen",
+  "interval_ms": 1000,
+  "actual_duration_s": 8.021566099996562,
+  "cpu_s": 3.484375,
+  "cpu_percent_one_core": 43.437590073607865,
+  "worker_cpu_s": 1.4375,
+  "tree_cpu_s": 4.921875,
+  "tree_cpu_percent_one_core": 61.35803082146402,
+  "rss_peak_sampled_bytes": 87035904,
+  "tree_rss_peak_sampled_bytes": 133095424,
+  "heartbeat_count": 239,
+  "heartbeat_max_gap_ms": 86.99039999919478,
+  "heartbeat_p95_gap_ms": 47.33329999726266,
+  "collection_count": 8,
+  "collection_mean_ms": 226.25000000152795
+}

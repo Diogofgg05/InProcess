@@ -1,0 +1,28 @@
+{
+  "method": "Mean of per-trial statistics; 25 ms heartbeat; startup included; not pooled latency or input latency",
+  "order": "Existing files; execution order not inferred",
+  "repetitions": 3,
+  "results": {
+    "thread": {
+      "collection_mean_ms": 179.1851851842323,
+      "heartbeat_p95_trial_mean_ms": 41.03396667536193,
+      "heartbeat_max_trial_mean_ms": 413.57889999441494,
+      "heartbeat_worst_gap_ms": 492.9182999912882,
+      "aggregate_cpu_percent_one_core_mean": 19.657624631569544,
+      "aggregate_peak_rss_trial_mean_mib": 92.45052083333333,
+      "gui_cpu_percent_one_core_mean": 19.657624631569544
+    },
+    "process": {
+      "collection_mean_ms": 193.41666666696256,
+      "heartbeat_p95_trial_mean_ms": 38.139933332179986,
+      "heartbeat_max_trial_mean_ms": 55.441166667151265,
+      "heartbeat_worst_gap_ms": 63.58070000715088,
+      "aggregate_cpu_percent_one_core_mean": 24.082691253069278,
+      "aggregate_peak_rss_trial_mean_mib": 121.41015625,
+      "gui_cpu_percent_one_core_mean": 7.811297718707621
+    }
+  },
+  "mean_max_gap_reduction_percent": 86.59477873075731,
+  "aggregate_memory_delta_mib": 28.95963541666667,
+  "limitations": "Short offscreen local trials; external load not controlled. Isolating native calls trades memory/CPU for fewer GUI stalls. Linux unverified."
+}

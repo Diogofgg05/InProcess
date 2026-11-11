@@ -1,0 +1,20 @@
+{
+  "scope": "Including startup; GUI + owned collector; direct cached process handles; heartbeat is not input latency",
+  "backend": "process",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "qt_platform": "offscreen",
+  "interval_ms": 1000,
+  "actual_duration_s": 7.9948234999901615,
+  "cpu_s": 0.546875,
+  "cpu_percent_one_core": 6.840363642808037,
+  "worker_cpu_s": 0.015625,
+  "tree_cpu_s": 0.5625,
+  "tree_cpu_percent_one_core": 7.035802604031123,
+  "rss_peak_sampled_bytes": 88723456,
+  "tree_rss_peak_sampled_bytes": 93126656,
+  "heartbeat_count": 252,
+  "heartbeat_max_gap_ms": 46.65019999083597,
+  "heartbeat_p95_gap_ms": 39.18240001075901,
+  "collection_count": 8,
+  "collection_mean_ms": 201.24999999825377
+}

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "expecto-process-manager"
+version = "0.1.0"
+description = "InProcess: process monitoring and a computational physics laboratory"
+requires-python = ">=3.11"
+dependencies = ["psutil==7.2.2", "PySide6==6.10.1"]
+
+[project.optional-dependencies]
+dev = ["pytest==9.0.2"]
+
+[project.scripts]
+inprocess = "expecto_process_manager.main:main"
+expecto = "expecto_process_manager.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+expecto_process_manager = ["interface/assets/*.svg", "interface/assets/*.png", "interface/assets/*.ico"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

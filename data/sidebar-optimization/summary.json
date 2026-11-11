@@ -1,0 +1,60 @@
+{
+  "environment": "Windows-11-10.0.26300-SP0",
+  "ui": {
+    "grouped": {
+      "before_median_ms": 89.75759999884758,
+      "after_median_ms": 16.267949999019038,
+      "reduction_percent": 81.8756851796083,
+      "before_p95_ms": 147.28350000223145,
+      "after_p95_ms": 28.001500002574176
+    },
+    "expanded": {
+      "before_median_ms": 80.98310000059428,
+      "after_median_ms": 20.1394000032451,
+      "reduction_percent": 75.13135456274543,
+      "before_p95_ms": 111.91359999793349,
+      "after_p95_ms": 45.46639999898616
+    },
+    "cpu_sorted": {
+      "before_median_ms": 141.48720000230242,
+      "after_median_ms": 19.709799998963717,
+      "reduction_percent": 86.06955258239404,
+      "before_p95_ms": 251.06640000012703,
+      "after_p95_ms": 36.37979999621166
+    },
+    "flat": {
+      "before_median_ms": 76.03095000013127,
+      "after_median_ms": 22.53039999777684,
+      "reduction_percent": 70.36680457400843,
+      "before_p95_ms": 129.47189999977127,
+      "after_p95_ms": 31.662499997764826
+    }
+  },
+  "real_gui": {
+    "before": {
+      "cpu_percent_one_core": 14.196217685873622,
+      "tree_cpu_percent_one_core": 37.11871326143061,
+      "collection_mean_ms": 226.6620370359373,
+      "heartbeat_p95_gap_ms": 38.82240000045082,
+      "heartbeat_max_gap_ms": 67.10126666439464,
+      "worst_gap_ms": 70.48089999443619,
+      "aggregate_peak_rss_mean_mib": 130.79427083333334
+    },
+    "after": {
+      "cpu_percent_one_core": 10.59913971308416,
+      "tree_cpu_percent_one_core": 30.881608416558784,
+      "collection_mean_ms": 194.33333333506232,
+      "heartbeat_p95_gap_ms": 37.6627000029354,
+      "heartbeat_max_gap_ms": 85.13993333326653,
+      "worst_gap_ms": 109.99530000117375,
+      "aggregate_peak_rss_mean_mib": 131.06901041666666
+    }
+  },
+  "limitations": "UI workload is synthetic (600 rows, 30 timed updates per view). Real GUI trials: three sequential 8 s trials before and after, startup included, 1000 ms sampling, Qt offscreen. External load is not controlled. Heartbeat gaps are not click latency, power or frame rate.",
+  "workload": {
+    "rows": 600,
+    "updates": 30,
+    "scope": "Process page update and Qt event processing; no sampling, native icon extraction or input latency"
+  },
+  "gui_cpu_reduction_percent": 25.338284128798925
+}

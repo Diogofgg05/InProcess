@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "run_id": "4a942fc2-3d84-4a48-9367-e39d3c9b8282",
+  "started_at": "2026-11-11T21:41:45.317405+00:00",
+  "origin": "DRIVER_REPORTED",
+  "device_kind": "gpu",
+  "power_interpretation": "board_electrical",
+  "ambient_c": null,
+  "ambient_source": null,
+  "uncertainties": null,
+  "capabilities": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "python": "3.12.10",
+    "cpu_temperature_api": false,
+    "cpu_power_sensor": null,
+    "cpu_thermal_validation_ready": false,
+    "nvidia": [
+      {
+        "index": 0,
+        "device": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+        "temperature_c": 56.0,
+        "power_w": 11.34,
+        "utilization_percent": 32.0,
+        "origin": "DRIVER_REPORTED",
+        "instrument": "nvidia-smi",
+        "temperature_scope": "gpu_die",
+        "power_scope": "gpu_board_electrical",
+        "power_temporal_response": "driver-defined; may be averaged",
+        "calibrated": false,
+        "ambient_c": null,
+        "read_duration_ms": 155.9242000002996
+      }
+    ],
+    "limitations": [
+      "CPU utilization is not power. GPU power and temperature do not validate a CPU thermal model.",
+      "No external calibration or ambient measurement is available automatically."
+    ]
+  },
+  "configured_interval_s": 2.0,
+  "planned_duration_s": 120.0,
+  "errors": [],
+  "start_epoch_s": 1794433305.6878629,
+  "actual_duration_s": 120.00052750000032,
+  "samples": 60,
+  "finished_at": "2026-11-11T21:43:45.688555+00:00",
+  "csv": "sensors.csv",
+  "sha256": "6ff9bad48e07ce4edf7c8e1b42791792596818b902afce01ce495da686f1adf4",
+  "cpu_thermal_validation": "NOT_VALIDATED",
+  "limitations": [
+    "GPU readings do not validate CPU parameters.",
+    "Board electrical power is not automatically die thermal input.",
+    "No ambient sensor or external calibration is available. Device readings may be time-averaged."
+  ]
+}

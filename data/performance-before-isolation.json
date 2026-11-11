@@ -1,0 +1,15 @@
+{
+  "scope": "GUI including startup, process page; measured heartbeat, not input latency",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "qt_platform": "offscreen",
+  "interval_ms": 1000,
+  "actual_duration_s": 8.00549840000167,
+  "cpu_s": 4.9375,
+  "cpu_percent_one_core": 61.67635983787056,
+  "rss_peak_sampled_bytes": 91631616,
+  "heartbeat_count": 223,
+  "heartbeat_max_gap_ms": 745.620500005316,
+  "heartbeat_p95_gap_ms": 49.189199999091215,
+  "collection_count": 8,
+  "collection_mean_ms": 587.9999999942811
+}

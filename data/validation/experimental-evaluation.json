@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "target": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "origin": "EXPERIMENTAL_INPUT",
+  "training_run": "6e4d6354-26ed-46f9-82b3-f82d02029652",
+  "validation_run": "4a942fc2-3d84-4a48-9367-e39d3c9b8282",
+  "independent_recordings": true,
+  "training_samples": 60,
+  "validation_samples": 60,
+  "ambient_c": null,
+  "status": "NOT_EVALUATED",
+  "physical_validation": false,
+  "reasons": [
+    "Não existe temperatura ambiente medida/declarada; C e k não são ajustados com ambiente inventado.",
+    "Potência elétrica de placa não é automaticamente entrada térmica do modelo. É necessária uma hipótese explícita para um estudo exploratório."
+  ],
+  "input_scope": {
+    "temperature_scope": "gpu_die",
+    "power_scope": "gpu_board_electrical"
+  },
+  "limitations": [
+    "Distinct run IDs and hashes prevent accidental reuse; they do not certify instrument calibration.",
+    "Unknown sensor uncertainty and electrical-to-thermal conversion prevent a physical validation claim.",
+    "No guarantee of CPU thermal safety is inferred from GPU data."
+  ]
+}

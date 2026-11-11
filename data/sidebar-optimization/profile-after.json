@@ -1,0 +1,82 @@
+{
+  "origin": "SIMULATED",
+  "rows": 600,
+  "updates": 10,
+  "profiled": true,
+  "scope": "Process page update and Qt event processing; no sampling, native icon extraction or input latency",
+  "cases": {
+    "grouped": {
+      "median_ms": 26.74200000183191,
+      "mean_ms": 27.84651000110898,
+      "p95_ms": 40.12240000156453,
+      "maximum_ms": 40.12240000156453,
+      "samples_ms": [
+        40.12240000156453,
+        29.718900004809257,
+        26.954500004649162,
+        26.52949999901466,
+        26.485200003662612,
+        24.02559999609366,
+        30.048699998587836,
+        28.06319999945117,
+        22.957200002565514,
+        23.559900000691414
+      ]
+    },
+    "expanded": {
+      "median_ms": 27.66419999898062,
+      "mean_ms": 34.40545999983442,
+      "p95_ms": 68.96270000288496,
+      "maximum_ms": 68.96270000288496,
+      "samples_ms": [
+        27.32549999927869,
+        24.387600002228282,
+        24.616100003186148,
+        31.38300000136951,
+        48.46709999401355,
+        27.6062000048114,
+        68.96270000288496,
+        37.34049999911804,
+        27.722199993149843,
+        26.243699998303782
+      ]
+    },
+    "cpu_sorted": {
+      "median_ms": 28.58974999981001,
+      "mean_ms": 28.7175199991907,
+      "p95_ms": 30.474999999569263,
+      "maximum_ms": 30.474999999569263,
+      "samples_ms": [
+        30.142899995553307,
+        30.474999999569263,
+        30.186900003172923,
+        28.61769999435637,
+        28.56180000526365,
+        27.987100002064835,
+        26.818599995749537,
+        27.142400002048817,
+        27.73019999585813,
+        29.51259999827016
+      ]
+    },
+    "flat": {
+      "median_ms": 29.433150000841124,
+      "mean_ms": 29.122260001167888,
+      "p95_ms": 33.631800004513934,
+      "maximum_ms": 33.631800004513934,
+      "samples_ms": [
+        31.84060000057798,
+        33.631800004513934,
+        26.67220000148518,
+        29.48150000156602,
+        26.327500003390014,
+        29.38480000011623,
+        29.58050000597723,
+        27.76319999975385,
+        30.103899996902328,
+        26.436599997396115
+      ]
+    }
+  },
+  "profile": "         1157666 function calls in 1.227 seconds\n\n   Ordered by: cumulative time\n   List reduced from 115 to 25 due to restriction <25>\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n       40    0.086    0.002    0.825    0.021 {built-in method processEvents}\n     3120    0.027    0.000    0.673    0.000 delegates.py:51(paint)\n     2600    0.161    0.000    0.493    0.000 {function ProcessDelegate.paint at 0x00000215C29E4B80}\n       40    0.003    0.000    0.375    0.009 processes_page.py:294(update_rows)\n    18630    0.171    0.000    0.359    0.000 process_groups.py:139(data)\n       40    0.000    0.000    0.249    0.006 contextlib.py:141(__exit__)\n       80    0.000    0.000    0.249    0.003 {built-in method builtins.next}\n       80    0.001    0.000    0.249    0.003 process_groups.py:96(batch_updates)\n       70    0.056    0.001    0.248    0.004 process_groups.py:45(rebuild)\n      270    0.077    0.000    0.217    0.001 {method 'emit' of 'PySide6.QtCore.SignalInstance' objects}\n    15400    0.199    0.000    0.209    0.000 processes_page.py:36(record_data)\n       40    0.008    0.000    0.119    0.003 processes_page.py:58(update)\n      520    0.012    0.000    0.080    0.000 {method 'initStyleOption' of 'PySide6.QtWidgets.QStyledItemDelegate' objects}\n     5720    0.006    0.000    0.079    0.000 processes_page.py:32(data)\n    10240    0.018    0.000    0.056    0.000 process_groups.py:115(index)\n      180    0.001    0.000    0.037    0.000 delegates.py:46(sizeHint)\n      180    0.008    0.000    0.036    0.000 {function ProcessDelegate.sizeHint at 0x00000215C29E4AE0}\n     4200    0.010    0.000    0.033    0.000 interaction.py:9(drawPrimitive)\n    11980    0.018    0.000    0.030    0.000 processes_page.py:90(lessThan)\n       40    0.026    0.001    0.026    0.001 benchmark_ui_updates.py:20(rows)\n   177358    0.025    0.000    0.025    0.000 {method 'get' of 'dict' objects}\n     1830    0.004    0.000    0.025    0.000 {method 'sort' of 'list' objects}\n     4200    0.021    0.000    0.023    0.000 {function QuietFocusStyle.drawPrimitive at 0x00000215C36BC540}\n    16260    0.014    0.000    0.023    0.000 process_groups.py:108(rowCount)\n    18660    0.014    0.000    0.023    0.000 process_groups.py:125(record)\n\n\n"
+}

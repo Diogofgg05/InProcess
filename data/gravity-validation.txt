@@ -1,0 +1,40 @@
+GRAVITAÇÃO NEWTONIANA — dados inteiramente simulados.
+Massa central pontual e fixa; corpo de teste sem atmosfera, colisões físicas ou relatividade.
+r'' = −GM r / |r|³; G = 6,67430×10⁻¹¹ m³ kg⁻¹ s⁻².
+E = m|v|²/2 − GMm/r (J); Lz = m(x·vy − y·vx) (kg·m²/s).
+Velocidade circular inicial: 7545.9468 m/s; período circular: 5828.5989 s.
+Passo nominal: 10 s; duração: 10800 s; 1080 intervalos.
+Último intervalo encurtado quando necessário para respeitar a duração pedida.
+Referência circular independente: x=R cos(ωt), y=R sin(ωt), ω=√(GM/R³).
+
+Euler explícito
+Máximo |ΔE|: 4.9050529e+09 J; máximo |ΔE|/|E₀|: 0.172285.
+Máximo |ΔLz|: 5.2129386e+12 kg·m²/s.
+RMSE de posição: 5361611.6 m; máximo: 11121978 m.
+
+Euler simplético
+Máximo |ΔE|: 3308568 J; máximo |ΔE|/|E₀|: 0.00011621.
+Máximo |ΔLz|: 0.109375 kg·m²/s.
+RMSE de posição: 96824.394 m; máximo: 149113.86 m.
+
+Velocity Verlet
+Máximo |ΔE|: 96.099949 J; máximo |ΔE|/|E₀|: 3.3754e-09.
+Máximo |ΔLz|: 0.078125 kg·m²/s.
+RMSE de posição: 1903.8783 m; máximo: 3482.1788 m.
+
+Convergência circular (passo s → RMSE de posição m):
+10 → Euler explícito: 5.36161e+06; Euler simplético: 96824.4; Velocity Verlet: 1903.88
+5 → Euler explícito: 3.01347e+06; Euler simplético: 49133; Velocity Verlet: 475.911
+2.5 → Euler explícito: 1.59657e+06; Euler simplético: 24748.5; Velocity Verlet: 118.969
+Ordem observada Euler explícito (10→5 s): 0.8312.
+Ordem observada Euler simplético (10→5 s): 0.9787.
+Ordem observada Velocity Verlet (10→5 s): 2.0002.
+Ordem observada Euler explícito (5→2.5 s): 0.9164.
+Ordem observada Euler simplético (5→2.5 s): 0.9894.
+Ordem observada Velocity Verlet (5→2.5 s): 2.0001.
+
+Euler explícito pode ganhar energia e afastar a órbita; Euler simplético é de primeira ordem e conserva Lz até arredondamento.
+Velocity Verlet é de segunda ordem para a força suave, com erro de energia geralmente oscilatório quando o passo resolve a órbita.
+Passos demasiado grandes podem produzir trajetórias sem valor físico. O limite de passos não é um critério de estabilidade.
+A singularidade central é protegida numericamente; não existe aqui um modelo de superfície terrestre ou de impacto.
+A massa do corpo multiplica E/Lz, mas não altera a aceleração nesta aproximação. Para massas comparáveis é necessário um modelo de dois corpos com recuo.

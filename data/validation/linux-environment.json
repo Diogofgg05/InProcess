@@ -1,0 +1,7 @@
+{
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.14.4",
+  "psutil": "7.2.2",
+  "qt": "6.10.1",
+  "recorded_at": "2026-11-11T21:49:00.140663+00:00"
+}

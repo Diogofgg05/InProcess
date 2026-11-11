@@ -1,0 +1,82 @@
+{
+  "origin": "SIMULATED",
+  "rows": 600,
+  "updates": 10,
+  "profiled": true,
+  "scope": "Process page update and Qt event processing; no sampling, native icon extraction or input latency",
+  "cases": {
+    "grouped": {
+      "median_ms": 150.6247999968764,
+      "mean_ms": 165.65901999929338,
+      "p95_ms": 254.89620000007562,
+      "maximum_ms": 254.89620000007562,
+      "samples_ms": [
+        151.07419999549165,
+        139.10249999753432,
+        150.17539999826113,
+        254.89620000007562,
+        169.8961000001873,
+        141.12459999887506,
+        143.36259999981849,
+        200.11230000091018,
+        158.404599998903,
+        148.44170000287704
+      ]
+    },
+    "expanded": {
+      "median_ms": 155.8057000002009,
+      "mean_ms": 161.24133999983314,
+      "p95_ms": 211.75249999942025,
+      "maximum_ms": 211.75249999942025,
+      "samples_ms": [
+        130.9012999990955,
+        133.22429999971064,
+        162.257200005115,
+        156.10049999668263,
+        141.10709999658866,
+        211.75249999942025,
+        172.88620000181254,
+        139.86609999847133,
+        155.51090000371914,
+        208.80729999771575
+      ]
+    },
+    "cpu_sorted": {
+      "median_ms": 140.81900000019232,
+      "mean_ms": 157.48658000084106,
+      "p95_ms": 277.7473000023747,
+      "maximum_ms": 277.7473000023747,
+      "samples_ms": [
+        134.2447999995784,
+        153.47130000009201,
+        143.24829999532085,
+        162.60570000304142,
+        277.7473000023747,
+        158.1921000033617,
+        134.186100003717,
+        138.3505999983754,
+        138.3897000050638,
+        134.42989999748534
+      ]
+    },
+    "flat": {
+      "median_ms": 61.64390000049025,
+      "mean_ms": 63.632909998705145,
+      "p95_ms": 84.41579999634996,
+      "maximum_ms": 84.41579999634996,
+      "samples_ms": [
+        57.420199998887256,
+        59.14160000247648,
+        84.41579999634996,
+        64.14619999850402,
+        50.26519999955781,
+        71.02719999966212,
+        72.85749999573454,
+        71.75669999560341,
+        56.737899998552166,
+        48.56080000172369
+      ]
+    }
+  },
+  "profile": "         7328666 function calls (7323866 primitive calls) in 5.511 seconds\n\n   Ordered by: cumulative time\n   List reduced from 106 to 25 due to restriction <25>\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n       40    0.003    0.000    4.451    0.111 processes_page.py:276(update_rows)\n       40    0.012    0.000    4.441    0.111 processes_page.py:55(update)\n  4840/40    1.003    0.000    4.428    0.111 {method 'emit' of 'PySide6.QtCore.SignalInstance' objects}\n       40    0.144    0.004    3.191    0.080 process_groups.py:39(rebuild)\n   315160    0.542    0.000    1.683    0.000 process_groups.py:87(index)\n       40    0.105    0.003    1.029    0.026 {built-in method processEvents}\n    47920    0.282    0.000    0.863    0.000 processes_page.py:85(lessThan)\n     3120    0.033    0.000    0.845    0.000 delegates.py:51(paint)\n   111240    0.561    0.000    0.647    0.000 processes_page.py:32(data)\n     2600    0.191    0.000    0.616    0.000 {function ProcessDelegate.paint at 0x0000019B2F028AE0}\n    96880    0.172    0.000    0.594    0.000 {method 'data' of 'PySide6.QtCore.QModelIndex' objects}\n   319780    0.340    0.000    0.559    0.000 process_groups.py:80(rowCount)\n    19120    0.209    0.000    0.481    0.000 process_groups.py:111(data)\n   199910    0.207    0.000    0.393    0.000 process_groups.py:91(parent)\n   322370    0.232    0.000    0.338    0.000 process_groups.py:85(columnCount)\n   502660    0.273    0.000    0.273    0.000 {method 'createIndex' of 'PySide6.QtCore.QAbstractItemModel' objects}\n  1097750    0.169    0.000    0.169    0.000 {method 'isValid' of 'PySide6.QtCore.QModelIndex' objects}\n   768690    0.109    0.000    0.109    0.000 {method 'row' of 'PySide6.QtCore.QModelIndex' objects}\n   731030    0.106    0.000    0.106    0.000 {method 'internalId' of 'PySide6.QtCore.QModelIndex' objects}\n      520    0.016    0.000    0.102    0.000 {method 'initStyleOption' of 'PySide6.QtWidgets.QStyledItemDelegate' objects}\n   869390    0.100    0.000    0.100    0.000 {built-in method builtins.len}\n   447210    0.093    0.000    0.093    0.000 {method 'sourceModel' of 'PySide6.QtCore.QAbstractProxyModel' objects}\n   113190    0.053    0.000    0.087    0.000 processes_page.py:20(rowCount)\n    24020    0.057    0.000    0.084    0.000 {method 'mapToSource' of 'PySide6.QtCore.QSortFilterProxyModel' objects}\n   440050    0.069    0.000    0.069    0.000 {method 'column' of 'PySide6.QtCore.QModelIndex' objects}\n\n\n"
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "expecto-gravity-1",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "velocity": "m/s",
+    "mass": "kg",
+    "energy": "J",
+    "angular_momentum": "kg m²/s"
+  },
+  "provenance": "simulado",
+  "model": "massa central fixa, gravitação Newtoniana 2D",
+  "config": {
+    "central_mass": 5.972e+24,
+    "body_mass": 1000,
+    "radius": 7000000.0,
+    "velocity_factor": 0.9,
+    "duration": 300,
+    "dt": 5
+  }
+}
