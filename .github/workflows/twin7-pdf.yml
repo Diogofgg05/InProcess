@@ -1,0 +1,57 @@
+name: Generate Digital Twin 7.0 academic PDF
+on:
+  push:
+    branches: [feature/inprocess-7-0-thermal-digital-twin]
+    paths:
+      - 'src/expecto_process_manager/physics/digital_twin7.py'
+      - 'examples/generate_twin7_pdf.py'
+      - '.github/workflows/twin7-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inprocess-twin7-pdf
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install reportlab
+        run: python -m pip install 'reportlab>=4,<5'
+      - name: Generate and verify report
+        env:
+          PYTHONPATH: src
+        run: |
+          python examples/generate_twin7_pdf.py --output docs/relatorios/InProcess_Thermal_Digital_Twin_7_0.pdf
+          python - <<'PY'
+          from pathlib import Path
+          pdf=Path('docs/relatorios/InProcess_Thermal_Digital_Twin_7_0.pdf')
+          assert pdf.stat().st_size>8000 and pdf.read_bytes().startswith(b'%PDF-')
+          print('Digital Twin PDF valid:',pdf.stat().st_size)
+          PY
+      - name: Upload academic report
+        uses: actions/upload-artifact@v4
+        with:
+          name: inprocess-thermal-digital-twin-7
+          path: docs/relatorios/InProcess_Thermal_Digital_Twin_7_0.pdf
+      - name: Commit report to feature branch
+        if: github.ref_name == 'feature/inprocess-7-0-thermal-digital-twin'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/relatorios/InProcess_Thermal_Digital_Twin_7_0.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate academic Thermal Digital Twin 7.0 PDF [skip ci]"
+            git fetch origin feature/inprocess-7-0-thermal-digital-twin
+            git rebase origin/feature/inprocess-7-0-thermal-digital-twin
+            git push origin HEAD:feature/inprocess-7-0-thermal-digital-twin
+          fi
