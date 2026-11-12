@@ -36,6 +36,7 @@ from ..core.latency import LatencyTrace
 from .delegates import NavigationDelegate
 from .process_icons import ProcessIcons
 from ..core.processes import ProcessService
+from ..core.insights import ProcessInsights
 from ..core.sampling_policy import effective_interval_ms
 from ..core.providers import PsutilProvider
 from ..core.metrics import export_csv,import_power
@@ -59,6 +60,8 @@ class MainWindow(QMainWindow):
         self.tasks = Tasks(self)
         self.provider = provider or PsutilProvider()
         self.service = ProcessService()
+        self.process_insights = ProcessInsights()
+        self.latest_insights = ()
         self.settings_store = QSettings(str(settings_path or Path.cwd()/'data/preferences.ini'),QSettings.IniFormat)
         if self.settings_store.value('appearanceVersion','')!='6':
             self.settings_store.setValue('theme',1)
@@ -295,6 +298,8 @@ class MainWindow(QMainWindow):
         with self.latency_trace.measure('page_navigation'):
             self.processes.set_display_active(index==0)
             self.pages.setCurrentIndex(index)
+            if index == 0:
+                self.processes.show_insights(self.latest_insights)
             if index==0: self.process_icons.request(self.processes.rows)
             self.footer.setVisible(index in (0,1) and self.height()>=650)
             self.update_resource_visibility()
@@ -352,6 +357,13 @@ class MainWindow(QMainWindow):
         if self.closing: return
         snapshot,rows,history = payload
         self.history_rows = history
+        # The read-only detector uses already-collected data and never probes
+        # processes again. Exclude our dedicated sampler/launcher identities.
+        self.latest_insights = self.process_insights.observe(
+            rows,
+            memory_total=snapshot.memory_total,
+            excluded_pids=getattr(self.collector, 'owned_pids', ()),
+        )
         # History continues to collect; hidden Qt views do not need re-rendering.
         if self.isMinimized():
             return
@@ -359,6 +371,7 @@ class MainWindow(QMainWindow):
         with self.latency_trace.measure(phase):
             self.processes.update_rows(rows)
         if self.pages.currentIndex()==0:
+            self.processes.show_insights(self.latest_insights)
             with self.latency_trace.measure('icon_dispatch'):
                 self.process_icons.request(rows)
         if self.pages.currentIndex()==1 and self.performance_tabs.currentIndex()==0:
