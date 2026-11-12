@@ -1,8 +1,38 @@
 import os
 import time
 import math
+import platform
 import psutil
 from .models import ProcessRecord
+
+
+# System processes must not be suspended or terminated by a general-purpose
+# task manager. This is a conservative safeguard, not a replacement for OS ACLs.
+_CRITICAL_NAMES = {
+    "Windows": frozenset({
+        "system", "registry", "smss.exe", "csrss.exe", "wininit.exe",
+        "services.exe", "lsass.exe", "winlogon.exe",
+    }),
+    "Linux": frozenset({"systemd", "init", "kthreadd"}),
+    "Darwin": frozenset({"launchd", "kernel_task"}),
+}
+
+
+def _protected_process_ids() -> set[int]:
+    """Protect this application, its parent and its ancestor process chain."""
+    protected = {0, 1, os.getpid(), os.getppid()}
+    try:
+        # A UI launched from a shell must not suspend/terminate that shell.
+        for parent in psutil.Process(os.getpid()).parents():
+            protected.add(parent.pid)
+    except (psutil.Error, OSError, AttributeError, TypeError):
+        # Still protect our own PID and immediate parent if enumeration fails.
+        pass
+    return protected
+
+
+def _critical_process_name(name: object, system: str) -> bool:
+    return isinstance(name, str) and name.strip().casefold() in _CRITICAL_NAMES.get(system, ())
 
 
 class ProcessService:
@@ -79,12 +109,14 @@ class ProcessService:
     def control(self, pid: int, created: float, action: str, *, authorized: bool = False) -> None:
         if not authorized:
             raise PermissionError("É necessária autorização explícita.")
-        if pid in (0, 1, os.getpid()):
-            raise ValueError("Processo protegido pela aplicação.")
         if action not in ("suspend", "resume", "terminate"):
             raise ValueError("Operação inválida.")
+        if pid in _protected_process_ids():
+            raise ValueError("Não é permitido alterar o InProcess, os seus antecessores ou processos do sistema protegidos.")
         process = psutil.Process(pid)
         if process.create_time() != created:
             raise psutil.NoSuchProcess(pid, msg="O PID foi reutilizado.")
+        if action in ("suspend", "terminate") and _critical_process_name(process.name(), platform.system()):
+            raise PermissionError("Processo crítico do sistema: suspensão ou terminação bloqueada.")
         getattr(process, action)()
         self.invalidate_status(pid)
