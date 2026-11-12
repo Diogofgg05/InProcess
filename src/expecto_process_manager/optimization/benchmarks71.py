@@ -59,14 +59,14 @@ def _cpu_time(proc):
     return t.user+t.system
 
 
-def _observer_tree(proc, created):
+def _observer_tree(proc, created, *, excluded_pids=()):
     if _identity(proc)!=created or not proc.is_running():
         raise psutil.NoSuchProcess(proc.pid, msg="O observador desapareceu ou o PID foi reutilizado.")
     try:
         children=proc.children(recursive=True)
     except (psutil.Error, OSError):
         children=[]
-    return [proc,*children]
+    return [p for p in [proc,*children] if p.pid not in excluded_pids]
 
 
 def _fingerprint():
@@ -132,7 +132,15 @@ def benchmark_trial(
             last_sample=now
             if proc is not None:
                 total_rss=0
-                for obj in _observer_tree(proc,created):
+                # Never count the reference workload as overhead of an
+                # observer (the task is a child of InProcess when launched by
+                # its own benchmark UI).
+                workload_ids={task.pid}
+                try:
+                    workload_ids.update(child.pid for child in psutil.Process(task.pid).children(recursive=True))
+                except (psutil.Error,OSError):
+                    pass
+                for obj in _observer_tree(proc,created,excluded_pids=workload_ids):
                     try:
                         key=(obj.pid,_identity(obj))
                         cpu=_cpu_time(obj)
