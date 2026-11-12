@@ -147,3 +147,21 @@ segurança do Windows/Linux. A CI não simula essas condições por completo.
 4. Watchdog instalado como serviço de privilégio mínimo auditado;
 5. Protocolos de decisão com limites térmicos e avaliação de robustez;
 6. Gestão adaptativa **só após** validação experimental e revisão de segurança.
+
+
+### Relatório PDF gerado diretamente dos teus benchmarks reais
+
+Depois de executar os ensaios 7.1 com Windows ou Linux, produzir
+gráficos de duração e estatísticas **sem dados inventados**:
+
+\`\`\`bash
+python -m pip install 'reportlab>=4,<5'
+python examples/report_benchmark73_pdf.py \
+  benchmarks/baseline.json benchmarks/inprocess.json \
+  -o benchmarks/benchmark-resultados.pdf
+\`\`\`
+
+O relatório usa os JSON originais e apresenta as razões de recusa da
+comparação sempre que os ensaios não sejam metodologicamente equivalentes.
+**Não** contém gráficos de consumo elétrico ou de latência da GUI, porque
+essas medições exigem instrumentos adicionais.
