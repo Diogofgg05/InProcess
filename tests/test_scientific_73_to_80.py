@@ -211,3 +211,35 @@ def test_native_refuses_unbounded_or_invalid_configuration():
     for duration in (-1,0,61,float("nan")):
         with pytest.raises(ValueError):
             native75.native_workload_trial(["python"],authorized=True,timeout_s=duration)
+
+
+
+def test_linux_scope_is_stopped_on_timeout(monkeypatch):
+    monkeypatch.setattr(native75.platform,"system",lambda:"Linux")
+    monkeypatch.setattr(native75.shutil,"which",lambda _: "/usr/bin/systemd-run")
+    launched=[]
+    stopped=[]
+    class Child:
+        returncode=None
+        def poll(self):return self.returncode
+        def terminate(self):self.returncode=-15
+        def wait(self,timeout=None):
+            if self.returncode is None:
+                raise native75.subprocess.TimeoutExpired(["systemd-run"],timeout)
+            return self.returncode
+    def launch(args,**kw):
+        launched.append(args)
+        return Child()
+    class Result:
+        returncode=0
+    monkeypatch.setattr(native75.subprocess,"Popen",launch)
+    monkeypatch.setattr(native75.subprocess,"run",lambda args,**kw: (
+        stopped.append(args) or Result()
+    ))
+    outcome=native75.native_workload_trial(
+        ["python","-c","pass"],authorized=True,timeout_s=1
+    )
+    assert outcome.status=="TIMEOUT"
+    unit=[a for a in launched[0] if a.startswith("--unit=")][0].split("=",1)[1]
+    assert stopped==[["systemctl","--user","stop",unit]]
+    assert unit.startswith("inprocess-bench-") and unit.endswith(".scope")
