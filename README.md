@@ -323,3 +323,38 @@ PYTHONPATH=src python examples/generate_thermal2d_pdf.py
 Tudo é **SIMULATED**: o mapa não é uma termografia real e
 as propriedades/material/fonte não estão calibrados contra um CPU ou GPU
 físico. Nenhuma ventoinha, processo ou política energética é modificada.
+
+
+## InProcess 6.3 — Advanced Control Laboratory (P / PI / PID)
+
+O laboratório tem agora uma página dedicada a **controlo térmico em
+realimentação**, comparando três reguladores sobre o mesmo sistema
+CPU–dissipador–ventoinha simulado:
+
+- P, PI e PID completo, com ganhos ajustáveis e derivada da medição
+  filtrada por um filtro de primeira ordem.
+- Saturação física do atuador entre 0 e 1 e proteção anti-windup
+  condicional do integrador.
+- Perturbação de potência térmica durante um intervalo configurável,
+  com resposta visual em gráficos.
+- Métricas IAE, ITAE, temperatura máxima, erro final, variação total
+  do atuador, saturação e acomodação **observada**, quando existe.
+- Verificação do balanço energético térmico e ensaio de sensibilidade
+  ao variar os ganhos PID em ±25%.
+- Exportação de séries numéricas em CSV e métricas/parâmetros em JSON.
+
+**Relatório académico:** [InProcess Advanced Control Laboratory 6.3 (PDF)](docs/relatorios/InProcess_Advanced_Control_Lab_6_3.pdf)
+
+Reproduzir os resultados:
+
+\`\`\`bash
+python -m pytest tests/test_control_lab63.py -q
+python -m pip install 'reportlab>=4,<5'
+PYTHONPATH=src python examples/generate_control63_pdf.py
+\`\`\`
+
+Todos os valores são **SIMULATED**, sem medição de RPM, sensores reais
+ou atuação no sistema operativo. A estabilidade em janela finita não
+prova estabilidade assintótica, e a fração da ventoinha **não é**
+uma medição de potência elétrica. A validação experimental continua
+a exigir calibração e ensaios independentes.
