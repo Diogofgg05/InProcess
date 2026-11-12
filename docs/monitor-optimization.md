@@ -13,3 +13,19 @@ Swap, temperatura CPU e frequência CPU têm cadência de 2 s; para cada um há 
 Cadências são configuráveis por código: `ProcessService(status_interval_s=5)` e `Monitor(auxiliary_interval_s=2)`. Valor zero desativa o cache correspondente. Estas opções não pedem privilégios administrativos.
 
 Os testes dedicados verificam idade e validade, CPU sempre consultada, PID reutilizado, poda, invalidação explícita e pós-controlo, falhas de sensores, ausência distinta de zero e intervalos inválidos. O isolamento da recolha num processo (implementado pelo controlador) trata separadamente a contenção de GIL das chamadas nativas.
+
+## InProcess Insights — indicadores passivos de utilização sustentada
+
+`core/insights.py` analisa unicamente os dados já amostrados: após três
+leituras consecutivas do mesmo PID e instante de criação, identifica
+CPU por processo ≥85% de um núcleo lógico ou RSS ≥max(768 MiB, 20% RAM total).
+A RAM total tem de estar disponível. A contagem é reiniciada quando o
+processo desaparece, muda de identidade, normaliza ou existe uma pausa >15s.
+
+O estado é limitado a 5000 identidades, apresenta até duas observações e
+exclui processos críticos conhecidos, o InProcess e os auxiliares de recolha.
+Não realiza chamadas adicionais ao sistema ou ações de controlo. CPU elevada
+pode ser normal; não é diagnóstico de falha, energia ou malware.
+O aviso usa `Qt.PlainText`, evitando interpretar nomes de processos como HTML.
+
+Testar: `python -m pytest tests/test_process_insights.py -q`.
