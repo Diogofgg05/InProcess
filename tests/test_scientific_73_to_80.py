@@ -121,6 +121,7 @@ class FakeProc:
         self.owner=owner
         self.history=[]
     def create_time(self):return self.created
+    def name(self):return 'safe-test-process.exe'
     def nice(self,arg=None):
         if arg is not None:
             self.priority=arg
