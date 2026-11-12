@@ -7,7 +7,7 @@ from .theme import icon
 
 
 GROUPS = (
-    ('Modelo térmico','CPU / GPU','thermal',(0,5,11,13,15)),
+    ('Modelo térmico','CPU / GPU','thermal',(0,5,11,13,15,16)),
     ('Energia e potência','Circuitos e arrefecimento','energy',(7,8,14)),
     ('Derivadas e sinais','Vibrações e dinâmica','signal',(3,9,12,10)),
     ('Calibração','Estimação de parâmetros','sliders',(4,)),
@@ -158,7 +158,7 @@ class LaboratoryWorkspace(QWidget):
         aliases={'termico':0,'modelo termico':0,'temperatura':0,'cpu gpu':5,'conducao':11,
                  'circuitos':7,'rc':7,'rl':7,'energia':7,'ventoinha':8,'motor':8,
                  'vibracao':9,'ressonancia':9,'acustica':12,'sinais':3,'derivadas':3,
-                 'calibracao':4,'bateria':14,'eletrotermica':14,'dissipador':13,'dois nos':13,'equacao do calor':15,'calor 1d':15,'pid':15,'pi termico':15,'convergencia termica':15,'eco':6,'ultra eco':6,'otimizacao':6,'nao linear':10}
+                 'calibracao':4,'bateria':14,'eletrotermica':14,'dissipador':13,'dois nos':13,'equacao do calor':15,'calor 1d':15,'calor 2d':16,'campo 2d':16,'thermal 2d':16,'termico 2d':16,'mapa termico':16,'pid':15,'pi termico':15,'convergencia termica':15,'eco':6,'ultra eco':6,'otimizacao':6,'nao linear':10}
         if query in aliases:
             self.setCurrentIndex(aliases[query]); return True
         return False
