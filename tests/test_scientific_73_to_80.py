@@ -136,6 +136,8 @@ def test_watchdog_restores_on_dead_owner_windows_mock(monkeypatch):
     owner=FakeProc(70001,200.,32)
     me=FakeProc(os.getpid(),300.,32)
     monkeypatch.setattr(wd.platform,"system",lambda:"Windows")
+    monkeypatch.setattr(wd,"_protected_process_ids",lambda:{0,1})
+    monkeypatch.setattr(wd,"_critical_process_name",lambda name,system:False)
     monkeypatch.setattr(wd.psutil,"NORMAL_PRIORITY_CLASS",32,raising=False)
     monkeypatch.setattr(wd.psutil,"BELOW_NORMAL_PRIORITY_CLASS",16384,raising=False)
     def find(pid):
@@ -156,6 +158,8 @@ def test_watchdog_does_not_overwrite_external_changes(monkeypatch):
     target=FakeProc(70000,100.,128)
     me=FakeProc(os.getpid(),300.,32)
     monkeypatch.setattr(wd.platform,"system",lambda:"Windows")
+    monkeypatch.setattr(wd,"_protected_process_ids",lambda:{0,1})
+    monkeypatch.setattr(wd,"_critical_process_name",lambda name,system:False)
     monkeypatch.setattr(wd.psutil,"NORMAL_PRIORITY_CLASS",32,raising=False)
     monkeypatch.setattr(wd.psutil,"BELOW_NORMAL_PRIORITY_CLASS",16384,raising=False)
     monkeypatch.setattr(wd.psutil,"Process",lambda p:target if p==70000 else me)
