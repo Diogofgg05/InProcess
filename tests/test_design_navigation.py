@@ -20,7 +20,7 @@ def app():
 def test_cards_keep_every_model_accessible_and_legacy_pages_hidden(app):
     lab=LaboratoryWorkspace()
     try:
-        for i in range(18): lab.add_lazy(f'Setor · Modelo {i}',lambda:QWidget())
+        for i in range(19): lab.add_lazy(f'Setor · Modelo {i}',lambda:QWidget())
         lab.setTabVisible(1,False); lab.setTabVisible(2,False)
         lab.resize(1250,750); lab.show(); app.processEvents()
         assert len(lab.cards)==5
