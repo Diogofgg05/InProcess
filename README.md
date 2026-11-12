@@ -283,3 +283,43 @@ python -m pytest tests/test_heat_implicit.py tests/test_heat_implicit_gui.py -q
 \`\`\`
 
 Para PowerShell, definir \`$env:PYTHONPATH='src'\` antes do gerador.
+
+
+## InProcess 6.2 — Thermal Field 2D (modelação física computacional)
+
+A nova página **Laboratório → Modelo térmico → Campo térmico 2D** usa um
+modelo transiente bidimensional baseado na conservação da energia.
+A resolução é explícita por volumes finitos (malha de centros de células)
+e inclui:
+
+- Dois materiais com condutividade e capacidade calorífica volumétrica
+  diferentes (material central opcional); fluxos entre materiais com média
+  harmónica da condutividade.
+- Fonte de calor local em watts, geometria e resolução configuráveis.
+- Fronteiras de temperatura fixa (Dirichlet), convecção (Robin, com
+  resistência da meia célula) e isolamento (Neumann sem fluxo).
+- Restrição explícita conservativa de passo por célula
+  \`dt <= min(C_i/(Σ G_faces + G_fronteira))\`, incluindo limite
+  de nós e de trabalho total.
+- Mapa térmico em cores e seletor temporal, implementados em PySide6;
+  exportação das temperaturas para CSV e dos metadados para JSON.
+- Balanço global \`ΔU = E_fonte - E_perdas\` com resíduo
+  de conservação, assim como comparação contra solução analítica para
+  material homogéneo sem fonte e fronteiras Dirichlet.
+- Estudo de refinamento de malha com erro RMSE. Como a escolha
+  do passo temporal depende da malha, este estudo não pretende
+  isolar uma ordem de convergência puramente espacial.
+
+**[Relatório académico PDF 6.2](docs/relatorios/InProcess_Thermal_Field_2D_6_2.pdf)**
+
+Reprodução:
+
+\`\`\`bash
+python -m pytest tests/test_heat_2d.py -q
+python -m pip install 'reportlab>=4,<5'
+PYTHONPATH=src python examples/generate_thermal2d_pdf.py
+\`\`\`
+
+Tudo é **SIMULATED**: o mapa não é uma termografia real e
+as propriedades/material/fonte não estão calibrados contra um CPU ou GPU
+físico. Nenhuma ventoinha, processo ou política energética é modificada.
