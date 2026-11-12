@@ -223,3 +223,21 @@ python -m pytest tests/test_coupled_models.py -q
 ```
 
 No Windows PowerShell, executar `$env:PYTHONPATH = "src"` antes do comando Python caso ainda não tenha sido instalado o pacote. O gerador produz gráficos vetoriais, equações, referências analíticas, valores numéricos e limitações. A validação de software não substitui medições físicas nem verificação académica da adequação do relatório.
+
+## Physical Systems Lab 6.0 — EDP, estabilidade, sensibilidade e controlo
+
+O laboratório integra uma página nova, **A · Modelação térmica 1D e controlo**, com três experiências:
+
+1. **Equação do calor 1D**: modelo de difusão transiente com fronteiras a temperatura ambiente, condição inicial senoidal, Euler explícito em diferenças finitas (espaço centrado), solução analítica independente e resíduos discretos de conservação de energia.
+2. **Convergência e sensibilidade**: quatro passos temporais/valores de Fourier, comparação RMSE com solução contínua, estudo de difusividade a 80%, 100% e 120%, com material e geometria configurados na interface. O erro espacial limita a inferência de ordem temporal.
+3. **Controlo térmico do CPU-dissipador**: sistema de dois nós térmicos, atuador de primeira ordem e regulador PI com saturação e anti-windup; comparação com ventilação fixa, sem controlar a ventoinha real nem estimar potência elétrica pela fração do atuador.
+
+**[Relatório académico PDF 6.0](docs/relatorios/InProcess_Physical_Systems_Lab_6.pdf)**, gerado de forma reproduzível pelo script [generate_lab6_pdf.py](examples/generate_lab6_pdf.py). O relatório inclui equações, gráficos, estabilidade, balanço, erros, sensibilidade e limitações. Os parâmetros são hipotéticos e os resultados são identificados como **SIMULATED**, não medidos.
+
+```bash
+python -m pytest tests/test_physical_lab6.py -q
+python -m pip install 'reportlab>=4,<5'
+PYTHONPATH=src python examples/generate_lab6_pdf.py --output docs/relatorios/InProcess_Physical_Systems_Lab_6.pdf
+```
+
+Em PowerShell: `$env:PYTHONPATH='src'` antes de executar o gerador, ou instalar o projeto com `pip install -e .`. A física simulada não é prova de eficiência energética real; são necessários sensores calibrados, dados independentes e incerteza experimental para essa afirmação.

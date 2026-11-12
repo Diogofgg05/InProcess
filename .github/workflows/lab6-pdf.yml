@@ -1,0 +1,41 @@
+name: Physical Systems Lab 6 academic PDF
+on:
+  push:
+    branches: [feature/physical-lab-6-heat-pid-validation, main]
+    paths:
+      - 'src/expecto_process_manager/physics/physical_lab6.py'
+      - 'examples/generate_lab6_pdf.py'
+      - '.github/workflows/lab6-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install report dependency
+        run: python -m pip install 'reportlab>=4,<5'
+      - name: Generate report from the Python models
+        env:
+          PYTHONPATH: src
+        run: |
+          python examples/generate_lab6_pdf.py --output docs/relatorios/InProcess_Physical_Systems_Lab_6.pdf
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('docs/relatorios/InProcess_Physical_Systems_Lab_6.pdf')
+          assert p.stat().st_size > 5000 and p.read_bytes()[:5] == b'%PDF-'
+          print("Valid PDF:",p.stat().st_size,"bytes")
+          PY
+      - name: Upload regenerated PDF for verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: inprocess-physical-lab6-pdf
+          path: docs/relatorios/InProcess_Physical_Systems_Lab_6.pdf

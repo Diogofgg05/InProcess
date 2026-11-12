@@ -177,6 +177,8 @@ class MainWindow(QMainWindow):
         self.laboratory.add_lazy('D · Acústica',lambda:FieldLabPage('acoustic',self.tasks))
         self.laboratory.add_lazy('A · CPU e dissipador',lambda:HardwareLabPage(('thermal_two_node',),self.tasks))
         self.laboratory.add_lazy('B · Bateria eletrotérmica',lambda:HardwareLabPage(('battery_rc',),self.tasks))
+        from .physical_lab6_page import PhysicalLab6Page
+        self.laboratory.add_lazy('A · Modelação térmica 1D e controlo',lambda:PhysicalLab6Page(self.tasks))
         self.inventory_pages = [InventoryPage('Aplicações de arranque','startup',self.tasks),
                                 InventoryPage('Utilizadores','users',self.tasks),InventoryPage('Serviços','services',self.tasks)]
         self.settings_page = SettingsPage(self)
