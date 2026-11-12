@@ -1,7 +1,7 @@
 name: Physical Systems Lab 6 academic PDF
 on:
   push:
-    branches: [feature/physical-lab-6-heat-pid-validation]
+    branches: [feature/physical-lab-6-heat-pid-validation, main]
     paths:
       - 'src/expecto_process_manager/physics/physical_lab6.py'
       - 'examples/generate_lab6_pdf.py'
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   generate:
@@ -34,13 +34,8 @@ jobs:
           assert p.stat().st_size > 5000 and p.read_bytes()[:5] == b'%PDF-'
           print("Valid PDF:",p.stat().st_size,"bytes")
           PY
-      - name: Publish PDF to the feature branch
-        if: github.ref_name == 'feature/physical-lab-6-heat-pid-validation'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/relatorios/InProcess_Physical_Systems_Lab_6.pdf
-          if ! git diff --cached --quiet; then
-            git commit -m "Generate Physical Systems Lab 6 PDF [skip ci]"
-            git push origin HEAD:feature/physical-lab-6-heat-pid-validation
-          fi
+      - name: Upload regenerated PDF for verification
+        uses: actions/upload-artifact@v4
+        with:
+          name: inprocess-physical-lab6-pdf
+          path: docs/relatorios/InProcess_Physical_Systems_Lab_6.pdf
