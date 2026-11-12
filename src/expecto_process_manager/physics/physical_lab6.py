@@ -134,14 +134,14 @@ def solve_heat(model: HeatSlab = HeatSlab(), *, duration_s: float = 4.0,
                       (final_e - initial_e) + boundary_energy)
 
 
-def heat_convergence(*, duration_s=2.0, token=None):
+def heat_convergence(model: HeatSlab | None = None, *, duration_s=2.0, token=None):
     """Temporal convergence at the same fixed spatial grid with independent reference.
 
     The exact continuum solution has an O(dx^2) spatial floor, so temporal
     order should not be inferred from the total error against that reference.
     Report errors as a descriptive convergence table, not an RK4 claim.
     """
-    model = HeatSlab(nodes=21)
+    model = model or HeatSlab(nodes=21)
     rows = []
     for factor in (.8, .4, .2, .1):
         result = solve_heat(model, duration_s=duration_s,
@@ -154,8 +154,8 @@ def heat_convergence(*, duration_s=2.0, token=None):
     return rows
 
 
-def heat_sensitivity(*, duration_s=2.0, token=None):
-    base = HeatSlab(nodes=21)
+def heat_sensitivity(model: HeatSlab | None = None, *, duration_s=2.0, token=None):
+    base = model or HeatSlab(nodes=21)
     rows = []
     for factor in (.8, 1.0, 1.2):
         model = replace(base, diffusivity_m2_s=base.diffusivity_m2_s * factor)
