@@ -47,3 +47,32 @@ O mesmo `task_id`, a mesma unidade/descrição de trabalho, a mesma quantidade p
 Uma comparação justa requer a mesma tarefa, computador, configuração, carga de fundo, fronteira de potência e condições experimentais. O cálculo cobre apenas o intervalo fornecido. Não inclui consumo anterior/posterior, calibração, incerteza instrumental, repetição de ensaios nem significância estatística. A recomendação descreve os valores fornecidos; não garante desempenho, segurança térmica ou poupança futura.
 
 Executar `python -m pytest tests/test_energy_eco.py` para verificar energia constante, tempos não uniformes, unidades, restrições, incompatibilidade de tarefas, proveniência, potência ausente, importação e cancelamento.
+
+## Parecer de eficiência com limites configuráveis (ECO Advisor)
+
+A função `optimization.advisor.energy_advice(comparison, min_savings_percent=5,
+max_slowdown_percent=25)` analisa a comparação anterior **sem modificar o
+sistema operativo**. Usa NORMAL como referência e calcula a diferença de energia
+em joules, watt-hora, redução percentual e diferença percentual de duração.
+Uma alternativa só é considerada candidata quando a comparação é válida,
+NORMAL é admissível, poupa a energia mínima exigida e o atraso não ultrapassa
+o limite. Sem uma referência válida, o parecer é inconclusivo.
+
+Na página Energia / ULTRA ECO, os parâmetros «Poupança mínima» e «Atraso máximo»
+podem ser configurados. O parecer é apresentado separadamente do perfil
+matematicamente menos energético. Assim, o perfil de energia mínima pode ser
+rejeitado pelo atraso excessivo. O relatório preserva as duas interpretações.
+
+Exemplo sintético: NORMAL consome 600 J em 10 s, ECO 675 J em 15 s e
+ULTRA ECO 500 J em 20 s. Com os limites de 5% de poupança e 25% de atraso,
+o parecer aconselha manter NORMAL: apesar de ULTRA ECO gastar menos joules,
+demora 100% mais. Com atraso máximo de 100%, ULTRA ECO pode tornar-se
+candidato **neste cenário simulado**.
+
+Os resultados são exclusivamente `DRY RUN`: sem alterações de processos,
+frequências, prioridades, planos de energia ou dispositivos. A origem
+`MEASURED` é declarada pelo utilizador e não garante calibração ou qualidade
+experimental. A política recomendada não prova ganhos no hardware real,
+nem valida automaticamente limites de segurança térmica.
+
+Testes: `python -m pytest tests/test_eco_advisor.py -q`.

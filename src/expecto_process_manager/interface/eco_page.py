@@ -15,6 +15,7 @@ from .charts import Plot
 from .workers import Tasks
 from ..optimization.eco import (POLICIES, compare_policies, load_policy_csv,
                                  synthetic_policy_runs)
+from ..optimization.advisor import energy_advice
 
 
 def _preview(comparison, token):
@@ -72,9 +73,11 @@ def _preview(comparison, token):
     return times, powers, energies
 
 
-def _calculate(runs, constraints, token):
+def _calculate(runs, constraints, token, advisory_limits=None):
     comparison = compare_policies(runs, token=token, **constraints)
-    return comparison, _preview(comparison, token)
+    advice = energy_advice(comparison, **(advisory_limits or {}))
+    comparison.report += "\n\n" + advice.report
+    return comparison, _preview(comparison, token), advice
 
 
 class EcoPage(QWidget):
@@ -84,6 +87,7 @@ class EcoPage(QWidget):
         super().__init__()
         self.tasks = tasks or Tasks(self)
         self.job = self.result = self.experiment = None
+        self.advice = None
         self._runs = {}
         self.policy_rows = {}
         layout = QVBoxLayout(self)
@@ -134,6 +138,20 @@ class EcoPage(QWidget):
         thermal_row.addWidget(self.limit_temperature)
         thermal_row.addWidget(self.max_temperature)
         constraint_form.addRow(thermal_row)
+        self.minimum_savings = QDoubleSpinBox()
+        self.minimum_savings.setRange(0, 100)
+        self.minimum_savings.setDecimals(1)
+        self.minimum_savings.setSuffix(" %")
+        self.minimum_savings.setValue(5)
+        self.minimum_savings.setToolTip("Redução energética mínima face ao perfil NORMAL.")
+        constraint_form.addRow("Poupança mínima", self.minimum_savings)
+        self.maximum_slowdown = QDoubleSpinBox()
+        self.maximum_slowdown.setRange(0, 1000)
+        self.maximum_slowdown.setDecimals(1)
+        self.maximum_slowdown.setSuffix(" %")
+        self.maximum_slowdown.setValue(25)
+        self.maximum_slowdown.setToolTip("Tempo adicional máximo permitido face ao perfil NORMAL.")
+        constraint_form.addRow("Atraso máximo", self.maximum_slowdown)
         metadata.addLayout(constraint_form, 1)
         body.addLayout(metadata)
 
@@ -203,6 +221,10 @@ class EcoPage(QWidget):
         body.addLayout(charts, 1)
         scroll.setWidget(content)
         layout.addWidget(scroll, 1)
+        self.advice_note = QLabel("PARECER · A aguardar comparação. Nenhuma política será alterada.")
+        self.advice_note.setObjectName("muted")
+        self.advice_note.setWordWrap(True)
+        layout.addWidget(self.advice_note)
         self.summary = QLabel()
         self.summary.setObjectName("muted")
         self.summary.setWordWrap(True)
@@ -221,6 +243,8 @@ class EcoPage(QWidget):
             row["completed"].setChecked(True)
             row["origin"].setText("SIMULATED · exemplo")
         self.result = self.experiment = None
+        self.advice = None
+        self.advice_note.setText("PARECER · A aguardar comparação. Nenhuma política será alterada.")
         self.table.setRowCount(0)
         for plot in self.plots:
             plot.update_series([], {})
@@ -229,6 +253,10 @@ class EcoPage(QWidget):
     def config(self):
         return {"max_duration": self.max_duration.value() if self.limit_duration.isChecked() else None,
                 "max_temperature": self.max_temperature.value() if self.limit_temperature.isChecked() else None}
+
+    def advisory_limits(self):
+        return {"min_savings_percent": self.minimum_savings.value(),
+                "max_slowdown_percent": self.maximum_slowdown.value()}
 
     def _busy(self, active):
         self.run.setEnabled(not active)
@@ -250,7 +278,9 @@ class EcoPage(QWidget):
             return
         self._busy(True)
         self.summary.setText("A comparar o trabalho concluído e integrar as séries em segundo plano…")
-        self.job = self.tasks.start(lambda token: _calculate(runs, constraints, token), self.display, self.calculation_failed)
+        limits = self.advisory_limits()
+        self.job = self.tasks.start(lambda token: _calculate(runs, constraints, token, limits),
+                                    self.display, self.calculation_failed)
 
     def open(self, policy):
         if self.job:
@@ -273,13 +303,15 @@ class EcoPage(QWidget):
         self._runs[run.policy] = run
         self.policy_rows[run.policy]["origin"].setText(f"{run.provenance} · {filename}")
         self.result = self.experiment = None
+        self.advice = None
+        self.advice_note.setText("PARECER · A aguardar comparação. Nenhuma política será alterada.")
         self.table.setRowCount(0)
         for plot in self.plots:
             plot.update_series([], {})
         self.summary.setText(f"{run.policy}: {len(run.times)} amostras carregadas; confirme a equivalência da tarefa antes de comparar.")
 
     def display(self, payload):
-        self.result, preview = payload
+        self.result, preview, self.advice = payload
         self.experiment = self.result
         self.job = None
         self._busy(False)
@@ -304,6 +336,19 @@ class EcoPage(QWidget):
         else:
             text = " ".join(self.result.reasons) or "Nenhum perfil satisfaz todas as restrições."
             self.summary.setText("Sem recomendação. "+text)
+        if self.advice.candidate:
+            self.advice_note.setText(
+                f"DRY RUN · {self.advice.candidate}: {self.advice.savings_percent:.1f}% menos energia, "
+                f"{self.advice.slowdown_percent:+.1f}% de tempo face a NORMAL. "
+                "Cenário dos dados fornecidos, não uma poupança real comprovada."
+            )
+        elif self.advice.status == "KEEP_NORMAL":
+            self.advice_note.setText(
+                "DRY RUN · Manter NORMAL: nenhuma alternativa respeita a poupança mínima "
+                "e o atraso máximo."
+            )
+        else:
+            self.advice_note.setText("DRY RUN · Parecer inconclusivo: " + " ".join(self.advice.reasons))
         self.result_ready.emit(self.result)
 
     def cancel(self):
