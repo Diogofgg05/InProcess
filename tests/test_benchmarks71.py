@@ -105,6 +105,10 @@ def test_gui_is_lazy_and_never_authorizes_priority_by_default(tmp_path):
         assert not page.apply_button.isEnabled()
         assert page.benchmark_label.count()==4
         page.benchmark_label.setCurrentIndex(0)
+        page.execute_benchmark()
+        assert "feche o InProcess" in page.benchmark_text.toPlainText()
+        assert not page.trials
+        page.benchmark_label.setCurrentIndex(1)
         page.iterations.setText("1000")
         page.repetitions.setText("1")
         page.execute_benchmark()
