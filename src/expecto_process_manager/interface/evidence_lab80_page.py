@@ -102,7 +102,7 @@ class EvidenceLab80Page(QWidget):
         self.results.setPlainText("A executar ensaio nativo com a tarefa de referência...")
         command=[sys.executable,"-m",
                  "expecto_process_manager.optimization.benchmark_workload71",
-                 "--iterations","300000"]
+                 "--iterations","3000000"]
         self.job=self.tasks.start(
             lambda token:native_workload_trial(command,authorized=True,
                                                timeout_s=20),
