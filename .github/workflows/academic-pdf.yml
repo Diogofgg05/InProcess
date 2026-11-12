@@ -1,0 +1,48 @@
+name: Generate academic multi-physics PDF
+on:
+  push:
+    branches: [feature/multiphysics-academic-report]
+    paths:
+      - 'examples/generate_coupled_pdf.py'
+      - 'src/expecto_process_manager/physics/**'
+      - 'src/expecto_process_manager/simulation/hardware_experiments.py'
+      - '.github/workflows/academic-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF generator dependency
+        run: python -m pip install 'reportlab>=4,<5'
+      - name: Generate academic PDF and validate
+        env:
+          PYTHONPATH: src
+        run: |
+          python examples/generate_coupled_pdf.py --output docs/relatorios/InProcess_Modelos_Fisicos_Acoplados.pdf
+          test -s docs/relatorios/InProcess_Modelos_Fisicos_Acoplados.pdf
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/relatorios/InProcess_Modelos_Fisicos_Acoplados.pdf')
+          assert p.read_bytes()[:5] == b'%PDF-'
+          print('PDF ready:', len(p.read_bytes()), 'bytes')
+          PY
+      - name: Commit generated PDF to feature branch
+        if: github.ref_name == 'feature/multiphysics-academic-report'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/relatorios/InProcess_Modelos_Fisicos_Acoplados.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Add generated academic multi-physics PDF [skip ci]"
+            git push origin HEAD:feature/multiphysics-academic-report
+          fi

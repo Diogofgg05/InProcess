@@ -13,6 +13,7 @@ from time import perf_counter
 
 from ..core.cancellation import Cancellation
 from ..physics.hardware_models import RCCircuit, RLCircuit, FanRotor, FanMotor, Oscillator
+from ..physics.coupled_models import TwoNodeThermal, BatteryThermalRC
 from ..physics.feedback import ThermalFeedback
 from ..physics.numerical.ode import solve_ivp, METHODS
 from ..physics.numerical._validation import finite_values, samples
@@ -34,6 +35,19 @@ PARAMETERS = {
     'base':('k0','W/K',1e-6,1e4),'gain':('β','W/K',0,1e4),
     'target':('T alvo','°C',-273.15,1000),'proportional':('Kp','1/K',0,100),
     'lag':('τ controlo','s',1e-6,1e4),'disturbance':('Perturbação','W',0,1e4),
+    'die_capacity':('C CPU','J/K',1e-3,1e7),
+    'sink_capacity':('C dissipador','J/K',1e-3,1e7),
+    'interface_conductance':('G interface','W/K',1e-6,1e6),
+    'ambient_conductance':('G ambiente','W/K',1e-6,1e6),
+    'capacity_ah':('Q nominal','Ah',1e-3,1e5),
+    'voltage_empty':('OCV mínima','V',1e-3,1e5),
+    'voltage_full':('OCV máxima','V',1e-3,1e5),
+    'internal_resistance':('R interna','Ω',1e-6,1e6),
+    'polarization_resistance':('R polarização','Ω',1e-6,1e6),
+    'polarization_capacitance':('C polarização','F',1e-6,1e9),
+    'discharge_current':('Corrente de descarga','A',0,1e5),
+    'thermal_capacity':('C térmico bateria','J/K',1e-3,1e8),
+    'cooling':('Condutância bateria','W/K',1e-6,1e6),
 }
 
 OBSERVABLE_UNITS = {
@@ -41,9 +55,14 @@ OBSERVABLE_UNITS = {
     'mechanical_w':'W','damping_w':'W','omega_rad_s':'rad/s','rpm':'RPM',
     'acceleration_rad_s2':'rad/s²','angular_momentum_kg_m2_s':'kg·m²/s',
     'temperature_c':'°C','conductance_w_k':'W/K','displacement_m':'m','velocity_m_s':'m/s','control':'1',
+    'cpu_temp_c':'°C','sink_temp_c':'°C','interface_w':'W','cooling_w':'W',
+    'soc':'1','polarization_v':'V','terminal_voltage_v':'V','chemical_j':'J',
+    'capacitor_j':'J','thermal_relative_j':'J','load_w':'W',
+    'loss_joule_w':'W','loss_polarization_w':'W',
 }
 STATE_UNITS = {'rc':['V'],'rl':['A'],'rotor':['rad/s'],'motor':['A','rad/s','°C'],
-               'vibration':['m','m/s'],'forced':['m','m/s'],'feedback':['°C','1']}
+               'vibration':['m','m/s'],'forced':['m','m/s'],'feedback':['°C','1'],
+               'thermal_two_node':['°C','°C'], 'battery_rc':['1','V','°C']}
 
 
 @dataclass(frozen=True)
@@ -92,6 +111,16 @@ SPECS = {
         'Resposta linear; curva de amplitude estacionária distinta do transiente no tempo.',
         'Pico de deslocamento só existe para ζ<1/√2; frot=RPM/60 e fpassagem=Npás frot.',
         'Frequência elevada não prova ressonância. Sem amortecimento, ressonância não admite amplitude estacionária finita.'),
+    'thermal_two_node':ModelSpec('CPU e dissipador: dois nós térmicos',TwoNodeThermal,(30.,26.),240.,.5,'cpu_temp_c','°C',
+        'Cdie Tdie′=P−Gi(Tdie−Ts); Cs Ts′=Gi(Tdie−Ts)−Ga(Ts−Ta); Qar=Ga(Ts−Ta).',
+        'Parâmetros térmicos concentrados positivos, potência constante e arrefecimento linear. Sem dados de sensores.',
+        'Acoplamento pela condução CPU–dissipador; solução analítica por dois modos exponenciais; conservação de energia.',
+        'Temperaturas não certificadas. Não reproduz hotspots, geometria 3D ou firmware real.'),
+    'battery_rc':ModelSpec('Bateria: circuito RC e aquecimento',BatteryThermalRC,(.85,0.,25.),120.,.2,'terminal_voltage_v','V',
+        'Q ds/dt=−I; Cp du/dt=I−u/Rp; Vterm=OCV(s)−IR0−u; Cth T′=I²R0+u²/Rp−k(T−Ta).',
+        'Célula equivalente de Thevenin; corrente de descarga constante; OCV linear idealizada; sem entropia e sem saturação.',
+        'Integra energia química, perdas Joule, energia do RC, energia entregue à carga e arrefecimento.',
+        'Não é previsão de autonomia ou saúde de bateria real, nem modelo de gestão BMS.'),
     'feedback':ModelSpec('Realimentação térmica não linear',ThermalFeedback,(30.,0.),180.,.1,'temperature_c','°C',
         'CT′=P+A sin(2πft)−(k0+βu)(T−Ta); τu u′=clip(Kp(T−Talvo),0,1)−u.',
         'Saturação não linear; atuador com atraso de primeira ordem, não atraso puro; ambiente constante.',
@@ -134,8 +163,13 @@ def run_hardware(config=HardwareConfig(),token=None):
     if len(initial)!=len(spec.initial): raise ValueError('Dimensão das condições iniciais inválida.')
     if config.model == 'motor' and initial[2]<-273.15: raise ValueError('Temperatura abaixo do zero absoluto.')
     if config.model == 'feedback' and (initial[0]<-273.15 or not 0<=initial[1]<=1): raise ValueError('Estado térmico/controlo inválido.')
+    if config.model == 'thermal_two_node' and min(initial)<-273.15: raise ValueError('Temperaturas iniciais inválidas.')
+    if config.model == 'battery_rc' and (not 0 <= initial[0] <= 1 or initial[2]<-273.15):
+        raise ValueError('SOC inicial entre 0 e 1 e temperatura física obrigatórios.')
     duration,dt = finite_values([spec.duration if config.duration is None else config.duration,spec.dt if config.dt is None else config.dt])
     if duration<=0 or dt<=0 or duration/dt>50000: raise ValueError('Duração/passo positivos; máximo 50000 passos por método.')
+    if config.model == 'battery_rc' and model.discharge_current * duration > initial[0] * model.capacity_coulombs:
+        raise ValueError('A simulação descarregaria a bateria abaixo de SOC=0; reduza duração ou corrente.')
     deadline = perf_counter()+20
     class Budget:
         def check(self):
@@ -155,6 +189,10 @@ def run_hardware(config=HardwareConfig(),token=None):
         reference = [model.exact(t,initial[0]) for t in times]
     elif config.model in ('vibration','forced'):
         reference = [model.exact_forced(t,initial) for t in times]
+    elif config.model=='thermal_two_node':
+        reference = [model.exact(t,initial)[0] for t in times]
+    elif config.model=='battery_rc':
+        reference = [model.exact(t,initial) for t in times]
     errors = {method:metrics([o[spec.primary] for o in obs],reference) for method,obs in observations.items()} if reference is not None else {}
     balances = {}
     for method,obs in observations.items():
@@ -165,7 +203,10 @@ def run_hardware(config=HardwareConfig(),token=None):
         for t,y,o in zip(times,trajectories[method],obs):
             if config.model in ('vibration','forced'):
                 net.append(model.force*math.cos(2*math.pi*model.frequency*t)*y[1]-o['damping_w'])
-            else: net.append(o['input_w']-o.get('joule_w',0)-o.get('drag_w',0))
+            elif config.model=='battery_rc':
+                net.append(-o['load_w']-o['cooling_w'])
+            else:
+                net.append(o['input_w']-o.get('joule_w',0)-o.get('drag_w',0)-o.get('cooling_w',0))
         received = quadrature(times,net)
         balances[method] = received-(obs[-1]['stored_j']-obs[0]['stored_j'])
     response = None
@@ -175,7 +216,7 @@ def run_hardware(config=HardwareConfig(),token=None):
         response = {'frequency_hz':frequencies,'amplitude_m':[v if math.isfinite(v) else None for v in amplitudes],
                     'natural_hz':model.natural_frequency,'damping_ratio':model.damping_ratio,
                     'resonance_hz':model.resonance_frequency,'regime':model.regime}
-    metadata = {'model_version':'5.0.0','origin':'SIMULATED','parameters':asdict(model),
+    metadata = {'model_version':'5.1.0' if config.model in ('thermal_two_node','battery_rc') else '5.0.0','origin':'SIMULATED','parameters':asdict(model),
                 'parameter_units':{n:PARAMETERS[n][1] for n in asdict(model)},
                 'initial':initial,'initial_units':STATE_UNITS[config.model],
                 'observable_units':{n:OBSERVABLE_UNITS[n] for n in observations['rk4'][0]},

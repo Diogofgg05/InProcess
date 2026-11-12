@@ -16,7 +16,14 @@ CHANNEL_NAMES = {'voltage_v':'Tensão do capacitor','current_a':'Corrente','stor
     'omega_rad_s':'Velocidade angular','rpm':'Rotação','acceleration_rad_s2':'Aceleração angular',
     'angular_momentum_kg_m2_s':'Momento angular','temperature_c':'Temperatura',
     'conductance_w_k':'Condutância térmica','displacement_m':'Deslocamento',
-    'velocity_m_s':'Velocidade de vibração','control':'Comando de arrefecimento'}
+    'velocity_m_s':'Velocidade de vibração','control':'Comando de arrefecimento',
+    'cpu_temp_c':'Temperatura CPU','sink_temp_c':'Temperatura dissipador',
+    'interface_w':'Transferência CPU-dissipador','cooling_w':'Potência de arrefecimento',
+    'soc':'Estado de carga (SOC)','polarization_v':'Tensão de polarização',
+    'terminal_voltage_v':'Tensão terminal','chemical_j':'Energia química idealizada',
+    'capacitor_j':'Energia do ramo RC','thermal_relative_j':'Energia térmica relativa',
+    'load_w':'Potência fornecida à carga','loss_joule_w':'Perdas na resistência interna',
+    'loss_polarization_w':'Perdas na polarização'}
 
 
 class HardwareLabPage(QWidget):
@@ -94,7 +101,8 @@ class HardwareLabPage(QWidget):
             self.fields[name] = field
             self.form.addRow(f'{title} ({unit})',field)
         self.initial = QLineEdit(', '.join(str(v) for v in spec.initial))
-        initial_units = 'V' if self.model.currentData()=='rc' else 'A' if self.model.currentData()=='rl' else 'rad/s' if self.model.currentData()=='rotor' else 'A, rad/s, °C' if self.model.currentData()=='motor' else '°C, adimensional' if self.model.currentData()=='feedback' else 'm, m/s'
+        from ..simulation.hardware_experiments import STATE_UNITS
+        initial_units = ', '.join(STATE_UNITS[self.model.currentData()])
         self.form.addRow('Estado inicial ('+initial_units+')',self.initial)
         self.duration = QLineEdit(str(spec.duration))
         self.dt = QLineEdit(str(spec.dt))

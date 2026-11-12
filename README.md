@@ -202,3 +202,24 @@ depender apenas das séries de potência fornecidas. Os snapshots não estão
 necessariamente sincronizados com essas séries. Nenhum processo ou plano
 energético é alterado por esta funcionalidade. Consulte
 [limites da comparação](docs/energy-eco.md).
+
+## Laboratório académico: novos modelos acoplados e PDF
+
+Dois novos modelos físicos estão integrados no mesmo laboratório PySide6:
+
+- **CPU e dissipador (2 nós térmicos):** duas equações diferenciais acopladas com capacidade do CPU e dissipador, transferência de calor pela interface e convecção para o ambiente. O balanço energético e a solução fechada permitem comparar Euler, Heun e RK4.
+- **Bateria eletrotérmica (3 estados):** estado de carga, circuito de polarização RC e aquecimento por perdas ohmicas. Inclui tensão terminal, balanço de energia, domínio SOC e referência analítica para a tensão sob corrente constante.
+
+Estes modelos são **SIMULATED**. Todos os parâmetros são ilustrativos, não estão calibrados contra o hardware do computador e não alteram serviços, ventoinhas, bateria ou políticas energéticas.
+
+**[Relatório académico em PDF — Modelos Físicos Acoplados](docs/relatorios/InProcess_Modelos_Fisicos_Acoplados.pdf)**
+
+Reproduzir o PDF a partir do código e parâmetros versionados:
+
+```bash
+python -m pip install 'reportlab>=4,<5'
+PYTHONPATH=src python examples/generate_coupled_pdf.py --output docs/relatorios/InProcess_Modelos_Fisicos_Acoplados.pdf
+python -m pytest tests/test_coupled_models.py -q
+```
+
+No Windows PowerShell, executar `$env:PYTHONPATH = "src"` antes do comando Python caso ainda não tenha sido instalado o pacote. O gerador produz gráficos vetoriais, equações, referências analíticas, valores numéricos e limitações. A validação de software não substitui medições físicas nem verificação académica da adequação do relatório.
