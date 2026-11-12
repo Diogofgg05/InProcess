@@ -16,6 +16,7 @@ import platform
 import shutil
 import subprocess
 import time
+import uuid
 
 
 @dataclass(frozen=True)
@@ -94,13 +95,33 @@ def native_workload_trial(command, *, authorized=False, timeout_s=20.,
     if not cap.supported:
         raise RuntimeError("; ".join(cap.limitations))
     started=time.perf_counter()
+    unit=None
     if cap.system=="Linux":
+        # A unique unit name is required so timeout can stop the whole scope,
+        # not just the systemd-run wrapper process.
+        unit="inprocess-bench-"+uuid.uuid4().hex[:16]+".scope"
         args=["systemd-run","--user","--scope","--quiet","--wait",
+              f"--unit={unit}",
               f"--property=CPUWeight={cpu_weight}","--",*command]
     else:
         args=list(command)
     child=subprocess.Popen(args,shell=False,stdout=subprocess.DEVNULL,
                            stderr=subprocess.DEVNULL)
+    cleanup_warning=""
+    def stop_scope():
+        if unit is None:
+            return ""
+        try:
+            completed=subprocess.run(
+                ["systemctl","--user","stop",unit],shell=False,
+                stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,
+                timeout=5,check=False
+            )
+            if completed.returncode!=0:
+                return "A limpeza da unidade systemd falhou; verificar processos."
+        except (OSError,subprocess.TimeoutExpired):
+            return "Não foi possível confirmar limpeza da unidade systemd."
+        return ""
     try:
         if cap.system=="Windows":
             try:
@@ -117,6 +138,7 @@ def native_workload_trial(command, *, authorized=False, timeout_s=20.,
             code=child.wait(timeout=timeout_s)
             status="SUCCESS" if code==0 else "FAILED_WORKLOAD"
         except subprocess.TimeoutExpired:
+            cleanup_warning=stop_scope()
             child.terminate()
             try:child.wait(timeout=2)
             except subprocess.TimeoutExpired:
@@ -132,4 +154,5 @@ def native_workload_trial(command, *, authorized=False, timeout_s=20.,
                 child.kill()
                 child.wait()
     return NativeRun(cap.mechanism,status,time.perf_counter()-started,
-                     code,"Operação limitada à tarefa lançada; potência elétrica não medida.")
+                     code,"Operação limitada à tarefa lançada; potência elétrica não medida. "
+                     +cleanup_warning)
