@@ -434,3 +434,41 @@ Consultar: [metodologia científica 7.1 e segurança 7.2](docs/performance-7-1-a
 python -m pytest tests/test_benchmarks71.py tests/test_priority72.py -q
 python examples/benchmark_observers71.py --label BASELINE --repetitions 3 --output benchmarks/baseline.json
 ~~~
+
+
+## InProcess 7.3 → 8.0 — Scientific Evidence & Safe Optimization
+
+A extensão implementa cinco frentes complementares:
+
+- **7.3 Scientific Benchmark:** compara ensaios reais usando média, mediana,
+  desvio-padrão, P95 e bootstrap descritivo. Exige pelo menos três ensaios
+  por cenário, mesma tarefa e mesma máquina. Não inventa latência da GUI
+  ou consumo energético.
+- **7.4 Priority Watchdog:** processo auxiliar independente tenta restaurar
+  uma alteração autorizada e temporária de prioridade se a interface falhar.
+  Verifica identidade PID/creation_time e um prazo curto. A reposição
+  **não é garantida** após falha do SO, crash do helper ou perda de permissões.
+- **7.5 Native Efficiency:** ensaio opt-in apenas sobre uma tarefa
+  criada para esse fim, usando Windows EcoQoS ou Linux
+  \`systemd-run --user --scope --property=CPUWeight=50\`, quando disponíveis.
+  Sem root automático e sem mudar processos de terceiros.
+- **7.6 Energy Monitoring:** importação de CSV em W/s/°C,
+  integração em J/Wh com metadados de sensor e limites de comparabilidade.
+  CSV recebido é \`MEASURED_UNVERIFIED\` até validação instrumental.
+- **8.0 Evidence Advisor:** recomendações explicáveis **somente leitura**,
+  sem aprendizagem automática nem alterações autónomas do SO.
+  Na ausência de evidência suficiente, declara isso explicitamente.
+
+As páginas do laboratório têm opções de comparação estatística, alteração
+autorizada com watchdog e uma nova área de medição energética/recomendação.
+
+A metodologia, limitações e comandos estão em
+[docs/inprocess-73-80-scientific-method.md](docs/inprocess-73-80-scientific-method.md).
+
+**[Relatório académico PDF 7.3–8.0](docs/relatorios/InProcess_Scientific_Evidence_8_0.pdf)** —
+documento metodológico gerado pelo código; não substitui ensaios reais.
+
+\`\`\`bash
+python -m pytest tests/test_scientific_73_to_80.py -q
+python -m pytest -q
+\`\`\`

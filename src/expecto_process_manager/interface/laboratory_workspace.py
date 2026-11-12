@@ -11,7 +11,7 @@ GROUPS = (
     ('Energia e potência','Circuitos e arrefecimento','energy',(7,8,14)),
     ('Derivadas e sinais','Vibrações e dinâmica','signal',(3,9,12,10)),
     ('Calibração','Estimação de parâmetros','sliders',(4,18)),
-    ('Otimização (ULTRA ECO)','Eficiência energética','cube',(6,19)),
+    ('Otimização (ULTRA ECO)','Eficiência energética','cube',(6,19,20)),
 )
 
 
@@ -158,7 +158,7 @@ class LaboratoryWorkspace(QWidget):
         aliases={'termico':0,'modelo termico':0,'temperatura':0,'cpu gpu':5,'conducao':11,
                  'circuitos':7,'rc':7,'rl':7,'energia':7,'ventoinha':8,'motor':8,
                  'vibracao':9,'ressonancia':9,'acustica':12,'sinais':3,'derivadas':3,
-                 'calibracao':4,'digital twin':18,'gemeo digital':18,'calibracao termica':18,'previsao termica':18,'bateria':14,'eletrotermica':14,'dissipador':13,'dois nos':13,'equacao do calor':15,'calor 1d':15,'calor 2d':16,'campo 2d':16,'thermal 2d':16,'termico 2d':16,'mapa termico':16,'pid':17,'pid completo':17,'controlo pid':17,'advanced control':17,'pi termico':15,'convergencia termica':15,'eco':6,'ultra eco':6,'otimizacao':6,'benchmark':19,'performance benchmark':19,'prioridades':19,'gestor de recursos':19,'resource management':19,'nao linear':10}
+                 'calibracao':4,'digital twin':18,'gemeo digital':18,'calibracao termica':18,'previsao termica':18,'bateria':14,'eletrotermica':14,'dissipador':13,'dois nos':13,'equacao do calor':15,'calor 1d':15,'calor 2d':16,'campo 2d':16,'thermal 2d':16,'termico 2d':16,'mapa termico':16,'pid':17,'pid completo':17,'controlo pid':17,'advanced control':17,'pi termico':15,'convergencia termica':15,'eco':6,'ultra eco':6,'otimizacao':6,'benchmark':19,'energia real':20,'recomendacoes':20,'energy evidence':20,'native eco':20,'performance benchmark':19,'prioridades':19,'gestor de recursos':19,'resource management':19,'nao linear':10}
         if query in aliases:
             self.setCurrentIndex(aliases[query]); return True
         return False

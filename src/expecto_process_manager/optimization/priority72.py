@@ -120,12 +120,37 @@ def temporary_lower_priority(pid:int,created:float,*,authorized:bool=False):
 
 
 def run_temporary_priority(pid:int,created:float,*,authorized:bool=False,
-                           duration_s:float=8.,token=None) -> PriorityOutcome:
+                           duration_s:float=8.,token=None,
+                           independent_watchdog:bool=False) -> PriorityOutcome:
     """Small bounded session; cannot remain active indefinitely."""
     if isinstance(duration_s,bool) or not isinstance(duration_s,(int,float)) or not math.isfinite(duration_s) or not 1<=duration_s<=15:
         raise ValueError("Sessões de prioridade limitadas a 1–15 segundos.")
     started=time.monotonic()
     with temporary_lower_priority(pid,created,authorized=authorized) as plan:
+        if independent_watchdog:
+            # A distinct child process monitors GUI identity and lease expiry.
+            # Refuse to proceed if it fails to start; the context immediately
+            # restores priority through its existing finally handler.
+            import subprocess
+            import sys
+            owner=psutil.Process(os.getpid())
+            args=[sys.executable,"-m","expecto_process_manager.optimization.watchdog74",
+                  "--pid",str(pid),"--created",repr(created),
+                  "--original",str(plan.original_priority),
+                  "--temporary",str(plan.temporary_priority),
+                  "--owner-pid",str(owner.pid),
+                  "--owner-created",repr(owner.create_time()),
+                  "--deadline",str(min(20.,duration_s+3.))]
+            kw={"stdin":subprocess.DEVNULL,"stdout":subprocess.DEVNULL,
+                "stderr":subprocess.DEVNULL}
+            if platform.system()=="Windows":
+                kw["creationflags"]=getattr(subprocess,"CREATE_NO_WINDOW",0)
+            watcher=subprocess.Popen(args,**kw)
+            time.sleep(.15)
+            if watcher.poll() is not None:
+                raise RuntimeError(
+                    "Watchdog independente não iniciou; prioridade revertida."
+                )
         until=started+duration_s
         while time.monotonic()<until:
             if token is not None:
