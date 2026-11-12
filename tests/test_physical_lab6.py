@@ -113,7 +113,7 @@ def test_main_window_lazy_physics_lab6(tmp_path):
     try:
         assert 15 not in window.laboratory.created
         page = window.laboratory.ensure(15)
-        assert page.mode.count() == 3
+        assert page.mode.count() == 4
         assert "SIMULATED" in page.note.text()
         assert page.result is None
     finally:
