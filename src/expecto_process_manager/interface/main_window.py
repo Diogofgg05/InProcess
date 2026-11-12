@@ -185,6 +185,8 @@ class MainWindow(QMainWindow):
         self.laboratory.add_lazy('A · Controlo térmico P PI PID',lambda:ControlLab63Page(self.tasks))
         from .thermal_twin7_page import ThermalTwin7Page
         self.laboratory.add_lazy('A · Gémeo digital térmico 7.0',lambda:ThermalTwin7Page(self.tasks))
+        from .resource_lab71_page import ResourceLab71Page
+        self.laboratory.add_lazy('G · Performance e recursos 7.1 / 7.2',lambda:ResourceLab71Page(self.tasks))
         self.inventory_pages = [InventoryPage('Aplicações de arranque','startup',self.tasks),
                                 InventoryPage('Utilizadores','users',self.tasks),InventoryPage('Serviços','services',self.tasks)]
         self.settings_page = SettingsPage(self)
