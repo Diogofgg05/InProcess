@@ -10,9 +10,10 @@ from PySide6.QtWidgets import (
 )
 from .charts import Plot
 from .workers import Tasks
+from ..physics.heat_implicit import (solve_heat_61, temporal_order_study, spatial_order_study)
 from ..physics.physical_lab6 import (
     HeatSlab, solve_heat, heat_convergence, heat_sensitivity,
-    FanControl, fan_comparison,
+    FanControl, fan_comparison, simulate_fan_control,
 )
 
 
@@ -37,8 +38,18 @@ class PhysicalLab6Page(QWidget):
         self.mode.addItem("Condução térmica 1D · equação do calor", "heat")
         self.mode.addItem("Convergência e sensibilidade · Fourier", "validation")
         self.mode.addItem("Arrefecimento: PI adaptativo vs fixo", "fan")
+        self.mode.addItem("6.1 · Métodos numéricos implícitos e convergência", "implicit")
         layout.addWidget(self.mode)
-        form = QFormLayout()
+        self.method = QComboBox()
+        self.method.addItem("Euler explícito (Fo ≤ 0,5)", "explicit")
+        self.method.addItem("Euler implícito (Backward Euler)", "backward_euler")
+        self.method.addItem("Crank–Nicolson", "crank_nicolson")
+        self.method.setCurrentIndex(2)
+        layout.addWidget(self.method)
+        self.mode.currentIndexChanged.connect(self._update_mode)
+
+        self.heat_form = QFormLayout()
+        form = self.heat_form
         self.length = QLineEdit("0.04")
         self.alpha = QLineEdit("0.00001")
         self.nodes = QLineEdit("21")
@@ -47,7 +58,23 @@ class PhysicalLab6Page(QWidget):
         form.addRow("Difusividade (m²/s)", self.alpha)
         form.addRow("Nós espaciais", self.nodes)
         form.addRow("Duração (s)", self.duration)
-        layout.addLayout(form)
+        self.heat_form_widget = QWidget()
+        self.heat_form_widget.setLayout(form)
+        layout.addWidget(self.heat_form_widget)
+        self.fan_form_widget = QWidget()
+        fan_form = QFormLayout(self.fan_form_widget)
+        self.target = QLineEdit("47")
+        self.proportional = QLineEdit("0.025")
+        self.integral = QLineEdit("0.0008")
+        self.thermal_power = QLineEdit("70")
+        self.fan_duration = QLineEdit("180")
+        fan_form.addRow("Temperatura alvo (°C)", self.target)
+        fan_form.addRow("Ganho proporcional (1/°C)", self.proportional)
+        fan_form.addRow("Ganho integral (1/(°C·s))", self.integral)
+        fan_form.addRow("Potência térmica simulada (W)", self.thermal_power)
+        fan_form.addRow("Duração (s)", self.fan_duration)
+        layout.addWidget(self.fan_form_widget)
+        self._update_mode()
         buttons = QHBoxLayout()
         self.run = QPushButton("Executar e verificar")
         self.run.setObjectName("primary")
@@ -67,6 +94,27 @@ class PhysicalLab6Page(QWidget):
         self.report.setReadOnly(True)
         layout.addWidget(self.report, 1)
 
+    def _update_mode(self, *_):
+        mode = self.mode.currentData()
+        self.heat_form_widget.setVisible(mode != "fan")
+        self.fan_form_widget.setVisible(mode == "fan")
+        self.method.setVisible(mode == "implicit")
+
+    def _read_fan(self):
+        try:
+            parameters = FanControl(
+                target_c=float(self.target.text()),
+                proportional=float(self.proportional.text()),
+                integral=float(self.integral.text()),
+                thermal_power_w=float(self.thermal_power.text())
+            )
+            duration = float(self.fan_duration.text())
+        except ValueError as exc:
+            raise ValueError("Parâmetros do controlador inválidos.") from exc
+        if not 0 < duration <= 3600:
+            raise ValueError("Duração do controlo entre 0 e 3600 s.")
+        return parameters, duration
+
     def _read(self):
         try:
             length = float(self.length.text())
@@ -82,11 +130,17 @@ class PhysicalLab6Page(QWidget):
     def execute(self):
         if self.job: return
         try:
-            model, duration = self._read()
+            mode = self.mode.currentData()
+            if mode == "fan":
+                fan_settings, duration = self._read_fan()
+                model = None
+            else:
+                model, duration = self._read()
+                fan_settings = None
         except ValueError as exc:
             self.note.setText(str(exc))
             return
-        mode = self.mode.currentData()
+        numerical_method = self.method.currentData()
         self.run.setEnabled(False)
         self.export_button.setEnabled(False)
         self.note.setText("A calcular no trabalhador, sem bloquear a interface...")
@@ -120,13 +174,49 @@ class PhysicalLab6Page(QWidget):
                                "diretamente da solução contínua.\n"
                                +json.dumps({"convergencia":convergence,"sensibilidade":sensitivity},
                                            ensure_ascii=False,indent=2))}
-            result = fan_comparison(token)
+            if mode == "implicit":
+                out = solve_heat_61(model, duration_s=duration, method=numerical_method, token=token)
+                time_rows = temporal_order_study(model, duration_s=duration,
+                                                 method=numerical_method, token=token)
+                space_rows = spatial_order_study(model, duration_s=duration, token=token)
+                return {
+                    "mode": mode, "origin": "SIMULATED",
+                    "times_s": list(out.times_s),
+                    "series": {
+                        "Centro numérico (°C)": [profile[model.nodes//2] for profile in out.profiles_c],
+                        "Referência contínua (°C)": [
+                            model.exact(model.length_m/2, t) for t in out.times_s
+                        ]
+                    },
+                    "parameters": asdict(model),
+                    "metadata": {"solver": numerical_method, "rmse_c": out.rmse_c,
+                                 "max_error_c": out.max_error_c, "fourier": out.fourier,
+                                 "energy_balance_j": out.balance_error_j,
+                                 "temporal_order": time_rows, "spatial_order": space_rows},
+                    "report": (
+                        "Métodos 6.1 · Difusão térmica 1D (simulação)\n"
+                        f"Esquema: {numerical_method}; Fo efetivo = {out.fourier:.6g}\n"
+                        f"RMSE vs EDP contínua = {out.rmse_c:.8g} °C\n"
+                        f"Resíduo discreto de energia = {out.balance_error_j:.8g} J\n"
+                        "Ordem temporal calculada face à solução SEMIDISCRETA exata; "
+                        "ordem espacial analisada separadamente sem erro de integração temporal.\n"
+                        "Crank–Nicolson é A-estável, mas pode apresentar oscilações com passos elevados.\n"
+                        + json.dumps({"temporal": time_rows, "spatial": space_rows},
+                                     ensure_ascii=False,indent=2)
+                    ),
+                }
+            result = {
+                "fixed": simulate_fan_control(fan_settings, adaptive=False,
+                                              duration_s=duration, token=token),
+                "adaptive": simulate_fan_control(fan_settings, adaptive=True,
+                                                 duration_s=duration, token=token),
+            }
             return {
                 "mode": mode, "origin": "SIMULATED",
                 "times_s": list(result["fixed"].times_s),
                 "series": {"CPU · ventilação fixa": list(result["fixed"].die_c),
                            "CPU · controlo PI": list(result["adaptive"].die_c)},
-                "parameters": asdict(FanControl()),
+                "parameters": asdict(fan_settings),
                 "metadata": {name: {"max_cpu_c":r.max_die_c,
                                     "last_cpu_c":r.last_die_c,
                                     "mean_fan_fraction":r.mean_fan_fraction}

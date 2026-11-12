@@ -241,3 +241,45 @@ PYTHONPATH=src python examples/generate_lab6_pdf.py --output docs/relatorios/InP
 ```
 
 Em PowerShell: `$env:PYTHONPATH='src'` antes de executar o gerador, ou instalar o projeto com `pip install -e .`. A física simulada não é prova de eficiência energética real; são necessários sensores calibrados, dados independentes e incerteza experimental para essa afirmação.
+
+
+## Physical Systems Lab 6.1 — métodos implícitos e convergência independente
+
+No Laboratório > **A · Modelação térmica 1D e controlo**, selecionar
+**6.1 · Métodos numéricos implícitos e convergência**. O seletor de método
+permite comparar Euler explícito, Euler implícito (Backward Euler) e
+Crank–Nicolson, mantendo a mesma geometria e difusividade térmica. A
+interface distingue também os parâmetros da barra térmica dos parâmetros
+do controlador PI, eliminando campos irrelevantes em cada modo.
+
+A implementação em \`physics/heat_implicit.py\` utiliza um sistema
+tridiagonal resolvido em O(N), sem formar matrizes densas. O esquema
+explícito exige **Fo ≤ 0,5**; Euler implícito é L-estável e Crank–Nicolson
+é A-estável, mas pode oscilar para passos muito grandes. São verificados
+fluxos nas fronteiras e balanço de energia de acordo com a quadratura de
+cada esquema.
+
+O laboratório calcula:
+- **Ordem temporal observada** comparando o estado central à solução
+  **semidiscreta exata**, evitando confundir erro espacial com temporal;
+  espera-se ordem 1 para Euler e 2 para Crank–Nicolson.
+- **Ordem espacial observada** comparando o modo próprio semidiscreto
+  à solução da EDP contínua, sem erro de passo temporal; espera-se ordem 2
+  para diferenças espaciais centradas.
+- **RMSE** relativamente à solução contínua e resíduos discretos de energia,
+  sempre com parâmetros, SI e origem **SIMULATED**.
+
+Os resultados são didáticos e não atestam aquecimento, consumo ou poupança
+reais do computador. Não é efetuada qualquer atuação sobre processos,
+ventoinhas ou políticas energéticas.
+
+**[Relatório PDF 6.1](docs/relatorios/InProcess_Numerical_Physics_6_1.pdf)**.
+Recriar o PDF localmente:
+
+\`\`\`bash
+python -m pip install 'reportlab>=4,<5'
+PYTHONPATH=src python examples/generate_lab61_pdf.py
+python -m pytest tests/test_heat_implicit.py tests/test_heat_implicit_gui.py -q
+\`\`\`
+
+Para PowerShell, definir \`$env:PYTHONPATH='src'\` antes do gerador.
