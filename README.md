@@ -399,3 +399,38 @@ Os modelos CPU-dissipador de dois nós, calor 1D/2D e P/PI/PID são mantidos
 como experiências independentes. Este **primeiro gémeo digital térmico é
 um modelo de apenas um nó**, identificável com amostras apropriadas; não é
 um gémeo digital completo e experimentalmente validado do computador.
+
+## InProcess 7.1 + 7.2 — benchmarks e controlo seguro de prioridades
+
+No Laboratório → Otimização, a página **G · Performance e recursos 7.1 / 7.2**
+reúne duas novas experiências.
+
+**7.1 Performance Benchmark Laboratory:** lança tarefas de CPU de referência
+reproduzíveis, regista os ensaios brutos e permite comparar uma execução
+sem monitor com InProcess, Gestor de Tarefas do Windows e GNOME System
+Monitor (apenas no SO em que esse monitor exista). Mede tempo da tarefa,
+CPU da aplicação observadora em % de um núcleo, pico de RSS amostrado e
+regularidade da recolha, com identidade de processos e proteção contra
+contar a tarefa-filho como custo do monitor. **Não mede latência de clique
+nem potência elétrica** e não afirma qual aplicação é a melhor sem
+dados recolhidos em condições comparáveis.
+
+**7.2 Adaptive Resource Management (modo seguro inicial):** pré-visualiza
+identidade e permissões, exige autorização e confirmação explícitas e
+permite redução temporária e limitada de prioridade de um único processo,
+tentando repor a classe anterior ao terminar/cancelar. No Windows a mudança
+permitida é NORMAL → BELOW_NORMAL. No Linux a restauração de nice=5 para
+nice=0 exige privilégios e por isso a ação é recusada a utilizadores
+comuns, sem escalada automática. **Não executar a GUI como root apenas
+para testar a funcionalidade.** Falhas do SO ou da própria aplicação
+podem impedir a reposição; a segurança não é garantida após crash.
+
+Os resultados não demonstram poupança real de energia nem comparações
+feitas com o Windows/Linux sem ensaios experimentais.
+
+Consultar: [metodologia científica 7.1 e segurança 7.2](docs/performance-7-1-adaptive-7-2.md).
+
+~~~bash
+python -m pytest tests/test_benchmarks71.py tests/test_priority72.py -q
+python examples/benchmark_observers71.py --label BASELINE --repetitions 3 --output benchmarks/baseline.json
+~~~
