@@ -7,7 +7,7 @@ from .theme import icon
 
 
 GROUPS = (
-    ('Modelo térmico','CPU / GPU','thermal',(0,5,11,13,15)),
+    ('Modelo térmico','CPU / GPU','thermal',(0,5,11,13,15,16)),
     ('Energia e potência','Circuitos e arrefecimento','energy',(7,8,14)),
     ('Derivadas e sinais','Vibrações e dinâmica','signal',(3,9,12,10)),
     ('Calibração','Estimação de parâmetros','sliders',(4,)),
