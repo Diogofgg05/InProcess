@@ -1,0 +1,57 @@
+name: Generate InProcess Control Lab 6.3 PDF
+on:
+  push:
+    branches: [feature/inprocess-6-3-control-laboratory]
+    paths:
+      - 'src/expecto_process_manager/physics/control_lab63.py'
+      - 'examples/generate_control63_pdf.py'
+      - '.github/workflows/lab63-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inprocess-lab63-pdf
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF generator
+        run: python -m pip install 'reportlab>=4,<5'
+      - name: Generate PDF and validate
+        env:
+          PYTHONPATH: src
+        run: |
+          python examples/generate_control63_pdf.py --output docs/relatorios/InProcess_Advanced_Control_Lab_6_3.pdf
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/relatorios/InProcess_Advanced_Control_Lab_6_3.pdf')
+          assert p.stat().st_size>8000 and p.read_bytes().startswith(b'%PDF-')
+          print('PDF validated:',p.stat().st_size,'bytes')
+          PY
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inprocess-control-lab-6-3
+          path: docs/relatorios/InProcess_Advanced_Control_Lab_6_3.pdf
+      - name: Publish PDF to feature branch
+        if: github.ref_name == 'feature/inprocess-6-3-control-laboratory'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/relatorios/InProcess_Advanced_Control_Lab_6_3.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate Advanced Control Lab 6.3 PDF [skip ci]"
+            git fetch origin feature/inprocess-6-3-control-laboratory
+            git rebase origin/feature/inprocess-6-3-control-laboratory
+            git push origin HEAD:feature/inprocess-6-3-control-laboratory
+          fi
