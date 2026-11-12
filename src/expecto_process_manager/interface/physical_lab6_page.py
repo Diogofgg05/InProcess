@@ -106,15 +106,15 @@ class PhysicalLab6Page(QWidget):
                                f"Resíduo discreto de energia = {out.balance_error_j:.6g} J.\n"
                                "O erro inclui discretização espacial e temporal.")}
             if mode == "validation":
-                convergence = heat_convergence(duration_s=duration,token=token)
-                sensitivity = heat_sensitivity(duration_s=duration,token=token)
+                convergence = heat_convergence(model, duration_s=duration,token=token)
+                sensitivity = heat_sensitivity(model, duration_s=duration,token=token)
                 return {
                     "mode": mode, "origin": "SIMULATED",
                     "times_s": [row["actual_fourier"] for row in convergence],
                     "series": {"RMSE (°C)": [row["rmse_c"] for row in convergence]},
                     "parameters": asdict(model),
                     "metadata": {"convergence": convergence, "sensitivity": sensitivity,
-                                 "note": "Estudo com grelha espacial predefinida de 21 nós."},
+                                 "note": "Estudo com grelha e material selecionados pelo utilizador."},
                     "report": ("Comparação do esquema explícito, malha fixa de 21 nós.\n"
                                "Os erros incluem erro espacial de ordem 2; não inferir ordem temporal "
                                "diretamente da solução contínua.\n"
