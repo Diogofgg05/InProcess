@@ -182,7 +182,7 @@ def test_each_physical_experiment_exports_reproducible_results(key,tmp_path):
     assert path.exists()
     saved=json.loads((tmp_path/(key+'.json')).read_text(encoding='utf-8'))
     assert saved['metadata']['origin']=='SIMULATED'
-    assert saved['metadata']['model_version']=='5.0.0'
+    assert saved['metadata']['model_version']==('5.1.0' if key in ('thermal_two_node','battery_rc') else '5.0.0')
     assert len(saved['metadata']['parameter_units'])==len(saved['metadata']['parameters'])
     replay=run_hardware(HardwareConfig(**saved['config']))
     assert replay.solutions==result.solutions
