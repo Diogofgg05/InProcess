@@ -175,3 +175,15 @@ limites, recomenda manter NORMAL. É uma decisão de **análise/DRY RUN**:
 não aplica alterações ao sistema operativo, não demonstra poupança
 experimental e não transforma o projeto num otimizador autónomo.
 Veja [energia e limites do método](docs/energy-eco.md).
+
+## Indicadores inteligentes de atividade (InProcess Insights)
+
+Na página Processos, o InProcess destaca discretamente até dois processos
+com CPU ou memória residente persistentemente elevadas. Só apresenta o aviso
+após três amostras consecutivas; compara PID e data de criação, evita picos
+isolados e remove os avisos quando os valores normalizam. Não monitoriza
+novos sensores, não transforma CPU% em watts e não atua sobre processos.
+
+As regras conservadoras iniciais são ≥85% de um núcleo lógico ou RSS
+≥max(768 MiB, 20% RAM total). O aviso não constitui diagnóstico de
+avaria ou desperdício. Consulte [monitorização](docs/monitor-optimization.md).
