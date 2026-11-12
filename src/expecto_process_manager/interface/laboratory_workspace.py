@@ -10,7 +10,7 @@ GROUPS = (
     ('Modelo térmico','CPU / GPU','thermal',(0,5,11,13,15,16,17)),
     ('Energia e potência','Circuitos e arrefecimento','energy',(7,8,14)),
     ('Derivadas e sinais','Vibrações e dinâmica','signal',(3,9,12,10)),
-    ('Calibração','Estimação de parâmetros','sliders',(4,)),
+    ('Calibração','Estimação de parâmetros','sliders',(4,18)),
     ('Otimização (ULTRA ECO)','Eficiência energética','cube',(6,)),
 )
 
