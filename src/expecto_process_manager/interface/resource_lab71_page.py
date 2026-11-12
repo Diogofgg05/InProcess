@@ -107,7 +107,12 @@ class ResourceLab71Page(QWidget):
             return
         try:
             label=self.benchmark_label.currentData()
-            pid=None if label=="BASELINE" else int(self.observer_pid.text())
+            if label=="BASELINE":
+                raise ValueError(
+                    "Para medir BASELINE sem observador, feche o InProcess e use "
+                    "examples/benchmark_observers71.py --label BASELINE no terminal."
+                )
+            pid=int(self.observer_pid.text())
             iterations=int(self.iterations.text())
             repetitions=int(self.repetitions.text())
             if not 1000<=iterations<=100_000_000 or not 1<=repetitions<=10:
