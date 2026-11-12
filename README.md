@@ -358,3 +358,44 @@ ou atuação no sistema operativo. A estabilidade em janela finita não
 prova estabilidade assintótica, e a fração da ventoinha **não é**
 uma medição de potência elétrica. A validação experimental continua
 a exigir calibração e ensaios independentes.
+
+
+## InProcess 7.0 — Thermal Digital Twin e validação temporal
+
+O laboratório inclui uma página nova **A · Gémeo digital térmico 7.0**,
+baseada num sistema térmico concentrado \`C·dT/dt = P-(T-Ta)/R\`.
+O modelo usa a discretização exata para potência e temperatura ambiente
+constantes em cada intervalo, com identificação de dois coeficientes por
+mínimos quadrados. A solução é rejeitada quando os dados não têm excitação
+suficiente, os coeficientes são não físicos ou a série é irregular.
+
+A identificação utiliza **exclusivamente a primeira parte cronológica**
+dos dados. A validação é feita em amostras futuras com previsão
+**recursiva**, sem corrigir o modelo usando temperaturas reais posteriores.
+O relatório apresenta RMSE, MAE, viés, R², a comparação com o baseline de
+persistência e um quantil P90 **empírico** de erros. Esse quantil não é um
+intervalo de confiança nem um intervalo preditivo calibrado.
+
+A página inclui um exemplo sintético e a importação de um CSV com os
+campos obrigatórios \`time_s,cpu_temp_c,ambient_c,power_w\`. Os dados CSV
+ficam explicitamente marcados como **MEASURED_UNVERIFIED**: a mera
+importação de leituras não comprova calibração, sincronismo nem que a
+potência elétrica declarada represente potência térmica. Previsões
+futuras hipotéticas só são permitidas **dentro das faixas de potência e
+temperatura ambiente observadas no treino**. Não existem ações sobre o SO,
+ventoinhas ou hardware físico.
+
+**[Relatório académico PDF 7.0](docs/relatorios/InProcess_Thermal_Digital_Twin_7_0.pdf)**
+
+Reproduzir o estudo:
+
+\`\`\`bash
+python -m pytest tests/test_digital_twin7.py -q
+python -m pip install 'reportlab>=4,<5'
+PYTHONPATH=src python examples/generate_twin7_pdf.py
+\`\`\`
+
+Os modelos CPU-dissipador de dois nós, calor 1D/2D e P/PI/PID são mantidos
+como experiências independentes. Este **primeiro gémeo digital térmico é
+um modelo de apenas um nó**, identificável com amostras apropriadas; não é
+um gémeo digital completo e experimentalmente validado do computador.
