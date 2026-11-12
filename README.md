@@ -187,3 +187,18 @@ novos sensores, não transforma CPU% em watts e não atua sobre processos.
 As regras conservadoras iniciais são ≥85% de um núcleo lógico ou RSS
 ≥max(768 MiB, 20% RAM total). O aviso não constitui diagnóstico de
 avaria ou desperdício. Consulte [monitorização](docs/monitor-optimization.md).
+
+## InProcess Insights + ECO Advisor
+
+A página Energia / ULTRA ECO mostra agora o **contexto de atividade dos processos
+recolhido pelo gestor**, sem executar uma segunda monitorização. Quando existem
+observações de CPU/RAM persistentemente elevados, apresenta um aviso de carga
+ativa e recomenda cautela na comparação experimental de energia. A ausência de
+alertas não comprova que o sistema esteja em repouso.
+
+**O novo contexto não é uma medição de potência.** CPU e RAM não são convertidos
+em watts e as diferenças de J/Wh e os pareceres da comparação continuam a
+depender apenas das séries de potência fornecidas. Os snapshots não estão
+necessariamente sincronizados com essas séries. Nenhum processo ou plano
+energético é alterado por esta funcionalidade. Consulte
+[limites da comparação](docs/energy-eco.md).

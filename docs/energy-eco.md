@@ -76,3 +76,23 @@ experimental. A política recomendada não prova ganhos no hardware real,
 nem valida automaticamente limites de segurança térmica.
 
 Testes: `python -m pytest tests/test_eco_advisor.py -q`.
+
+## Contexto de carga real no ECO Advisor
+
+A página do laboratório recebe os avisos já calculados pelo
+`ProcessInsights`, quando é criada e sempre que chegam novos snapshots.
+O módulo `optimization/workload.py` apresenta três estados:
+`NO_SNAPSHOT`, `NO_SUSTAINED_SIGNAL` e `ACTIVE_WORKLOAD`.
+O ecrã distingue cargas persistentes de CPU/RAM e deixa claro que não é
+possível deduzir watts dessas métricas. Não existe novo sensor, thread ou
+processo de monitorização por causa desta funcionalidade.
+
+O contexto serve para alertar que uma comparação energética deve ser feita
+em condições experimentais controladas. Os dados de processos são instantâneos:
+**não estão sincronizados com os intervalos de potência dos perfis comparados**.
+Por isso, o parecer de poupança, os valores em J/Wh, a proveniência e a
+admissibilidade térmica não são alterados por avisos de utilização do CPU.
+Um alerta de atividade não prova que existe desperdício, nem autoriza terminar
+ou suspender processos. Nenhum perfil é aplicado automaticamente.
+
+Testes dedicados: `python -m pytest tests/test_workload_context.py -q`.

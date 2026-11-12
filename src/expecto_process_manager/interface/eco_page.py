@@ -16,6 +16,7 @@ from .workers import Tasks
 from ..optimization.eco import (POLICIES, compare_policies, load_policy_csv,
                                  synthetic_policy_runs)
 from ..optimization.advisor import energy_advice
+from ..optimization.workload import assess_workload
 
 
 def _preview(comparison, token):
@@ -88,6 +89,7 @@ class EcoPage(QWidget):
         self.tasks = tasks or Tasks(self)
         self.job = self.result = self.experiment = None
         self.advice = None
+        self.workload_context = assess_workload((), collected=False)
         self._runs = {}
         self.policy_rows = {}
         layout = QVBoxLayout(self)
@@ -99,6 +101,10 @@ class EcoPage(QWidget):
         self.notice.setObjectName("muted")
         self.notice.setWordWrap(True)
         layout.addWidget(self.notice)
+        self.workload_note = QLabel(self.workload_context.report)
+        self.workload_note.setObjectName("muted")
+        self.workload_note.setWordWrap(True)
+        layout.addWidget(self.workload_note)
 
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -231,6 +237,24 @@ class EcoPage(QWidget):
         layout.addWidget(self.summary)
         self.set_preset()
 
+    def update_workload(self, insights, *, observed_processes=0, collected=True):
+        """Use an existing snapshot; never start a second sampler or estimate watts."""
+        self.workload_context = assess_workload(
+            insights, observed_processes=observed_processes, collected=collected
+        )
+        if self.workload_context.state == 'ACTIVE_WORKLOAD':
+            self.workload_note.setText(
+                'CARGA ATIVA · ' + '  •  '.join(self.workload_context.hints)
+                + ' Comparações de energia exigem medições em condições controladas.'
+            )
+        elif self.workload_context.state == 'NO_SNAPSHOT':
+            self.workload_note.setText('CONTEXTO · A aguardar dados reais de processos.')
+        else:
+            self.workload_note.setText(
+                'CONTEXTO · Sem atividade persistente detetada. '
+                'Não demonstra que não existem cargas em segundo plano.'
+            )
+
     def set_preset(self):
         if self.job:
             return
@@ -312,6 +336,8 @@ class EcoPage(QWidget):
 
     def display(self, payload):
         self.result, preview, self.advice = payload
+        # Snapshot context is displayed separately; it does not change the
+        # scientific result or certify the time span of the energy trace.
         self.experiment = self.result
         self.job = None
         self._busy(False)
