@@ -6,7 +6,7 @@ from dataclasses import asdict
 from PySide6.QtWidgets import (QMainWindow,QWidget,QFrame,QHBoxLayout,QVBoxLayout,QListWidget,
                               QListWidgetItem,QStackedWidget,QLabel,QLineEdit,QPushButton,
                               QFileDialog,QMessageBox,QApplication,QScrollArea,QTabWidget)
-from PySide6.QtCore import QTimer,QSettings,QSize,Qt
+from PySide6.QtCore import QTimer,QSettings,QSize,Qt,QEvent
 from PySide6.QtGui import QShortcut,QKeySequence,QDesktopServices
 from PySide6.QtCore import QUrl
 from .workers import Tasks,SamplingThread
@@ -36,6 +36,7 @@ from ..core.latency import LatencyTrace
 from .delegates import NavigationDelegate
 from .process_icons import ProcessIcons
 from ..core.processes import ProcessService
+from ..core.sampling_policy import effective_interval_ms
 from ..core.providers import PsutilProvider
 from ..core.metrics import export_csv,import_power
 from ..physics.integration import integrate
@@ -300,6 +301,24 @@ class MainWindow(QMainWindow):
             if index == 2 and self.history_rows: self.history.refresh(self.history_rows)
             if index == 1 and self.performance_tabs.currentIndex()==0 and self.history_rows: self.performance.refresh(self.history_rows)
 
+    def _apply_sampling_policy(self):
+        """Keep full sampling while visible, but reduce overhead minimized."""
+        if hasattr(self, 'collector'):
+            self.collector.interval_ms = effective_interval_ms(
+                self.settings_page.interval.value(), minimized=self.isMinimized()
+            )
+
+    def changeEvent(self,event):
+        super().changeEvent(event)
+        if event.type() == QEvent.WindowStateChange and hasattr(self, 'collector'):
+            self._apply_sampling_policy()
+            if hasattr(self, 'pulse_timer'):
+                if self.isMinimized():
+                    self.pulse_timer.stop()
+                elif not self.closing:
+                    self._last_pulse = time.perf_counter()
+                    self.pulse_timer.start()
+
     def resizeEvent(self,event):
         super().resizeEvent(event)
         self.update_resource_visibility()
@@ -333,6 +352,9 @@ class MainWindow(QMainWindow):
         if self.closing: return
         snapshot,rows,history = payload
         self.history_rows = history
+        # History continues to collect; hidden Qt views do not need re-rendering.
+        if self.isMinimized():
+            return
         phase='process_view' if self.pages.currentIndex()==0 else 'process_snapshot'
         with self.latency_trace.measure(phase):
             self.processes.update_rows(rows)
@@ -367,7 +389,7 @@ class MainWindow(QMainWindow):
 
     def set_interval(self,value):
         self.settings_store.setValue('interval',value)
-        if hasattr(self,'collector'): self.collector.interval_ms = value
+        if hasattr(self,'collector'): self._apply_sampling_policy()
 
     def set_history_limit(self,value):
         self.settings_store.setValue('history',value)

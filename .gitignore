@@ -7,3 +7,12 @@ __pycache__/
 build/
 dist/
 data/preferences.ini
+
+# Local test results and temporary artifacts (not source code).
+.pytest_tmp/
+test-results.txt
+test-results.xml
+*.pyc
+
+# Machine-local settings, reports and logs generated during development.
+*.log
