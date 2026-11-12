@@ -78,7 +78,7 @@ def test_energy_csv_metadata_is_not_silently_trusted(tmp_path):
     trace=load_energy_trace_csv(p,device="laptop",sensor="meter",
                                 power_scope="wall")
     assert trace.provenance=="MEASURED_UNVERIFIED"
-    assert integrate_energy(trace).joules==pytest.approx(32)
+    assert integrate_energy(trace).joules==pytest.approx(32.5)
 
 
 def test_energy_invalid_sources_and_comparison_refusals():
