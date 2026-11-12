@@ -19,6 +19,8 @@ import time
 
 import psutil
 
+from ..core.processes import _critical_process_name, _protected_process_ids
+
 
 def _allowed(original, temporary, system):
     if system=="Windows":
@@ -50,7 +52,11 @@ def restore_if_expected(pid, created, original, temporary, *,
     if (not 1<=deadline_s<=20 or not .05<=interval_s<=1
             or not math.isfinite(deadline_s) or not math.isfinite(interval_s)):
         raise ValueError("Limites de execução inválidos.")
+    if pid in _protected_process_ids():
+        raise PermissionError("Processo protegido; o watchdog não pode alterar a prioridade.")
     target=psutil.Process(pid)
+    if _critical_process_name(target.name(),system):
+        raise PermissionError("Processo crítico protegido.")
     if target.create_time()!=created:
         raise psutil.NoSuchProcess(pid,msg="PID reutilizado.")
     # Do not permit the helper to restore another user's process.
