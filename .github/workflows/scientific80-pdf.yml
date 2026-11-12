@@ -1,0 +1,55 @@
+name: Generate Scientific Evidence 8.0 PDF
+on:
+  push:
+    branches: [feature/inprocess-73-80-scientific-energy-safety]
+    paths:
+      - 'examples/generate_scientific80_pdf.py'
+      - '.github/workflows/scientific80-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inprocess-scientific80-pdf
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install ReportLab
+        run: python -m pip install 'reportlab>=4,<5'
+      - name: Generate verified PDF
+        run: |
+          python examples/generate_scientific80_pdf.py --output docs/relatorios/InProcess_Scientific_Evidence_8_0.pdf
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/relatorios/InProcess_Scientific_Evidence_8_0.pdf')
+          assert p.stat().st_size>10000
+          assert p.read_bytes().startswith(b'%PDF-')
+          print('Academic PDF generated:',p.stat().st_size,'bytes')
+          PY
+      - name: Upload PDF for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: inprocess-scientific-evidence-8-0
+          path: docs/relatorios/InProcess_Scientific_Evidence_8_0.pdf
+      - name: Commit PDF to feature branch
+        if: github.ref_name == 'feature/inprocess-73-80-scientific-energy-safety'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/relatorios/InProcess_Scientific_Evidence_8_0.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish academic Scientific Evidence 8.0 PDF [skip ci]"
+            git fetch origin feature/inprocess-73-80-scientific-energy-safety
+            git rebase origin/feature/inprocess-73-80-scientific-energy-safety
+            git push origin HEAD:feature/inprocess-73-80-scientific-energy-safety
+          fi
