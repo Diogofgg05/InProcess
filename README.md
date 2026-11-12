@@ -160,3 +160,18 @@ Quando a janela do InProcess está **minimizada**, a frequência de recolha pass
 Para evitar perda de trabalho e instabilidade, as operações manuais de suspensão/terminação recusam o próprio InProcess, o processo que o iniciou, os seus antecessores acessíveis e uma lista conservadora de processos críticos do sistema operativo. A verificação de reutilização de PID e a confirmação do utilizador continuam ativas. Estas proteções são complementares às permissões do SO e não garantem proteção contra todas as interrupções possíveis. O motor ULTRA ECO continua a **comparar** perfis, sem os aplicar automaticamente.
 
 Os ficheiros de execução temporários do pytest e os resultados locais de testes deixam de ser versionados; os relatórios científicos reproduzíveis e respetivos dados em `reports/` e `data/` são preservados.
+
+## ECO Advisor — poupança mínima e atraso máximo
+
+No Laboratório → Energia / ULTRA ECO, o InProcess apresenta um parecer
+independente da simples escolha de menor energia. O utilizador define a
+**poupança mínima** e o **atraso máximo**, em percentagem relativamente ao
+perfil NORMAL. São calculados joules, Wh, redução relativa e diferença
+de duração. Os resultados são registados no relatório científico.
+
+Quando NORMAL não pode ser usado como referência ou as tarefas não são
+comparáveis, o parecer é inconclusivo. Quando nenhuma alternativa cumpre os
+limites, recomenda manter NORMAL. É uma decisão de **análise/DRY RUN**:
+não aplica alterações ao sistema operativo, não demonstra poupança
+experimental e não transforma o projeto num otimizador autónomo.
+Veja [energia e limites do método](docs/energy-eco.md).
