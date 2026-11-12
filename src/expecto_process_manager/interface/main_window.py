@@ -262,6 +262,11 @@ class MainWindow(QMainWindow):
         else:
             from .eco_page import EcoPage
             page=EcoPage(self.tasks)
+            page.update_workload(
+                self.latest_insights,
+                observed_processes=len(self.processes.rows),
+                collected=bool(self.history_rows),
+            )
         return self.prepare_science_page(page,kind)
 
     def open_hardware(self):
@@ -364,6 +369,11 @@ class MainWindow(QMainWindow):
             memory_total=snapshot.memory_total,
             excluded_pids=getattr(self.collector, 'owned_pids', ()),
         )
+        # The ECO laboratory is lazy: update it only when it already exists.
+        # Never let process CPU/RSS change calculated joules or watts.
+        eco_page = self.laboratory.created.get(6)
+        if eco_page is not None:
+            eco_page.update_workload(self.latest_insights, observed_processes=len(rows))
         # History continues to collect; hidden Qt views do not need re-rendering.
         if self.isMinimized():
             return
