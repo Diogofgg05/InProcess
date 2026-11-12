@@ -1,0 +1,57 @@
+name: Generate Thermal Field 2D academic PDF
+on:
+  push:
+    branches: [feature/inprocess-6-2-thermal-field-2d]
+    paths:
+      - 'examples/generate_thermal2d_pdf.py'
+      - 'src/expecto_process_manager/physics/heat_2d.py'
+      - '.github/workflows/lab62-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inprocess-lab62-pdf
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF generator
+        run: python -m pip install 'reportlab>=4,<5'
+      - name: Generate academic report and verify header
+        env:
+          PYTHONPATH: src
+        run: |
+          python examples/generate_thermal2d_pdf.py --output docs/relatorios/InProcess_Thermal_Field_2D_6_2.pdf
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('docs/relatorios/InProcess_Thermal_Field_2D_6_2.pdf')
+          assert p.stat().st_size > 10000 and p.read_bytes().startswith(b'%PDF-')
+          print('PDF verified:',p.stat().st_size,'bytes')
+          PY
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inprocess-thermal-field-2d-6-2
+          path: docs/relatorios/InProcess_Thermal_Field_2D_6_2.pdf
+      - name: Commit PDF on feature branch
+        if: github.ref_name == 'feature/inprocess-6-2-thermal-field-2d'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/relatorios/InProcess_Thermal_Field_2D_6_2.pdf
+          if ! git diff --cached --quiet; then
+            git commit -m "Generate Thermal Field 2D PDF [skip ci]"
+            git fetch origin feature/inprocess-6-2-thermal-field-2d
+            git rebase origin/feature/inprocess-6-2-thermal-field-2d
+            git push origin HEAD:feature/inprocess-6-2-thermal-field-2d
+          fi
