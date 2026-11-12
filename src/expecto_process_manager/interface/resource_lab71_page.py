@@ -18,6 +18,8 @@ from ..optimization.benchmarks71 import (
     benchmark_trial,validate_comparison,write_benchmark_json,
 )
 from ..optimization.priority72 import preview_priority,run_temporary_priority
+from ..optimization.statistics73 import analyse_benchmarks
+from ..optimization.recommendations80 import recommend_from_benchmark
 
 
 class ResourceLab71Page(QWidget):
@@ -143,6 +145,8 @@ class ResourceLab71Page(QWidget):
         self.trials.extend(new_trials)
         self.export_benchmark.setEnabled(True)
         comparison=validate_comparison(self.trials)
+        scientific=analyse_benchmarks(self.trials)
+        advice=recommend_from_benchmark(scientific)
         last=new_trials[-1]
         self.benchmark_text.setPlainText(
             f"Último cenário: {last.label}; estado={last.status}\n"
@@ -154,6 +158,11 @@ class ResourceLab71Page(QWidget):
             f"razões: {'; '.join(comparison['reasons']) or 'dados disponíveis'}\n"
             "Latência de clique: NÃO MEDIDA. Frequência mostrada: "
             "regularidade do amostrador do benchmark, não frequência da GUI.\n"
+            f"7.3 Estatística: comparável={scientific.comparable}; "
+            f"razões={'; '.join(scientific.reasons) or 'sem bloqueios'}\n"
+            +("Resultados descritivos: "+str([(v.label,round(v.median_duration_s,4),
+                round(v.p95_duration_s,4)) for v in scientific.stats])+"\n")
+            +f"8.0 Parecer: {advice.status} — {advice.explanation}\n"
             "Executar os diferentes monitores isoladamente no mesmo computador "
             "e repetir em ordem alternada."
         )
@@ -225,7 +234,8 @@ class ResourceLab71Page(QWidget):
         self.priority_text.setPlainText("Sessão temporária em curso; reposição ao sair...")
         def run(token):
             return run_temporary_priority(
-                plan.pid,plan.created,authorized=True,duration_s=duration,token=token
+                plan.pid,plan.created,authorized=True,duration_s=duration,token=token,
+                independent_watchdog=True
             )
         self.job=self.tasks.start(run,self.priority_done,self.priority_failed)
 
