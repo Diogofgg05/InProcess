@@ -216,7 +216,7 @@ def run_hardware(config=HardwareConfig(),token=None):
         response = {'frequency_hz':frequencies,'amplitude_m':[v if math.isfinite(v) else None for v in amplitudes],
                     'natural_hz':model.natural_frequency,'damping_ratio':model.damping_ratio,
                     'resonance_hz':model.resonance_frequency,'regime':model.regime}
-    metadata = {'model_version':'5.1.0','origin':'SIMULATED','parameters':asdict(model),
+    metadata = {'model_version':'5.1.0' if config.model in ('thermal_two_node','battery_rc') else '5.0.0','origin':'SIMULATED','parameters':asdict(model),
                 'parameter_units':{n:PARAMETERS[n][1] for n in asdict(model)},
                 'initial':initial,'initial_units':STATE_UNITS[config.model],
                 'observable_units':{n:OBSERVABLE_UNITS[n] for n in observations['rk4'][0]},
