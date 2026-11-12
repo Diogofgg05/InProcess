@@ -140,6 +140,17 @@ class ProcessesPage(QWidget):
         self.grouping.setMinimumWidth(140); self.grouping.setMaximumWidth(190)
         bar.addWidget(self.grouping)
         layout.addLayout(bar)
+        self.insights_label = QLabel()
+        self.insights_label.setObjectName('muted')
+        self.insights_label.setTextFormat(Qt.PlainText)
+        self.insights_label.setWordWrap(True)
+        self.insights_label.setMargin(8)
+        self.insights_label.setToolTip(
+            'Observações de amostras consecutivas, não diagnósticos de avarias. '
+            'Não é realizada qualquer otimização automática.'
+        )
+        self.insights_label.hide()
+        layout.addWidget(self.insights_label)
         layout.addSpacing(20)
         self.model = ProcessModel(self)
         self.proxy = ProcessProxy(self)
@@ -239,6 +250,14 @@ class ProcessesPage(QWidget):
         self.search.textChanged.connect(self.render)
         self.filter.currentIndexChanged.connect(self.render)
         self.table.selectionModel().selectionChanged.connect(self.selection)
+
+    def show_insights(self, insights):
+        """Present sustained activity as a short, passive, non-clickable notice."""
+        message = "  •  ".join(insight.message for insight in insights[:2])
+        if message != self.insights_label.text():
+            self.insights_label.setText(message)
+        if self.insights_label.isHidden() == bool(message):
+            self.insights_label.setVisible(bool(message))
 
     def show_details(self):
         from PySide6.QtWidgets import QMessageBox
